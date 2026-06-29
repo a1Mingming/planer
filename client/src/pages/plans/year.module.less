@@ -1,0 +1,60 @@
+@import '@/styles/variables.less';
+
+.page {
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  min-width: 80px;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+
+  @media (max-width: @breakpoint-mobile) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+}
+
+.monthCard {
+  background: #fff;
+  border-radius: @border-radius;
+  padding: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  min-height: 90px;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.monthName {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.stats {
+  font-size: 13px;
+  color: #666;
+}
+
+.empty {
+  font-size: 12px;
+  color: #bbb;
+}

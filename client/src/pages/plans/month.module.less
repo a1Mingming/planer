@@ -1,0 +1,74 @@
+@import '@/styles/variables.less';
+
+.page {
+  position: relative;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.navTitle {
+  font-size: 18px;
+  font-weight: 600;
+  min-width: 120px;
+  text-align: center;
+}
+
+.desktop {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.calendarPane {
+  width: 320px;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: @border-radius;
+  padding: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.listPane {
+  flex: 1;
+  min-width: 0;
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: @primary-color;
+  margin: 2px auto 0;
+}
+
+.mobilePicker {
+  margin-bottom: 16px;
+}
+
+.dateGroup {
+  margin-bottom: 16px;
+}
+
+.dateGroupTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}

@@ -1,0 +1,65 @@
+@import '@/styles/variables.less';
+
+.card {
+  background: #fff;
+  border-radius: @border-radius;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: opacity 0.2s;
+}
+
+.done {
+  opacity: @plan-done-opacity;
+
+  .title {
+    text-decoration: line-through;
+  }
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  flex: 1;
+  font-size: 14px;
+  color: #1a1a1a;
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+
+  .card:hover & {
+    opacity: 1;
+  }
+}
+
+.meta {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-left: 24px;
+}
+
+.time {
+  font-size: 12px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}

@@ -1,0 +1,28 @@
+import { getDb } from './connection';
+
+export function migrate(): void {
+  const db = getDb();
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS plans (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      title      TEXT    NOT NULL,
+      date       TEXT    NOT NULL,
+      start_time TEXT,
+      end_time   TEXT,
+      tags       TEXT,
+      done       INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+      updated_at TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_plans_date ON plans(date);
+    CREATE INDEX IF NOT EXISTS idx_plans_date_done ON plans(date, done);
+
+    CREATE TABLE IF NOT EXISTS tags (
+      id        INTEGER PRIMARY KEY AUTOINCREMENT,
+      name      TEXT    NOT NULL UNIQUE,
+      is_preset INTEGER NOT NULL DEFAULT 0
+    );
+  `);
+}
