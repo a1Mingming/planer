@@ -1,0 +1,8 @@
+node_modules/
+dist/
+data/
+src/**/__tests__/
+*.md
+.env
+.env.*
+*.log

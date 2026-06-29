@@ -1,0 +1,12 @@
+node_modules/
+dist/
+src/.umi/
+src/.umi-production/
+e2e/
+test-results/
+*.spec.ts
+playwright.config.ts
+*.md
+.env
+.env.*
+*.log

@@ -52,12 +52,28 @@ test/
 
 ## 快速开始
 
-### 环境要求
+### Docker 一键启动（生产模式）
+
+```bash
+# 从项目根目录（需已安装 Docker Desktop）
+docker compose up --build
+```
+
+首次构建约需 3–5 分钟。完成后访问 `http://localhost`，Nginx 服务前端静态文件，`/api` 请求自动转发到后端容器。
+
+```bash
+docker compose down        # 停止（保留数据库）
+docker compose down -v     # 停止并删除数据库（完全重置）
+```
+
+### 本地开发启动
+
+#### 环境要求
 
 - Node.js 20（后端必须）
 - pnpm（前端包管理器）
 
-### 安装依赖
+#### 安装依赖
 
 ```bash
 # 后端
