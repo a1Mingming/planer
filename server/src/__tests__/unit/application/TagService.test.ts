@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { TagService } from '../../../../application/TagService';
-import type { ITagRepository } from '../../../../domain/tag/ITagRepository';
-import type { Tag } from '../../../../domain/tag/Tag';
+import { TagService } from '../../../application/TagService';
+import type { ITagRepository } from '../../../domain/tag/ITagRepository';
+import type { Tag } from '../../../domain/tag/Tag';
 import {
   TagNotFoundError,
   TagAlreadyExistsError,
   TagPresetReadonlyError,
-} from '../../../../domain/tag/TagErrors';
+} from '../../../domain/tag/TagErrors';
 
 const presetTag: Tag = { id: 1, name: '工作', is_preset: true };
 const customTag: Tag = { id: 6, name: '阅读', is_preset: false };

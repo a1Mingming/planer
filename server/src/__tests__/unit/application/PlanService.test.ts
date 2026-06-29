@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { PlanService } from '../../../../application/PlanService';
-import type { IPlanRepository } from '../../../../domain/plan/IPlanRepository';
-import type { Plan, CreatePlanDto } from '../../../../domain/plan/Plan';
-import { PlanNotFoundError } from '../../../../domain/plan/PlanErrors';
+import { PlanService } from '../../../application/PlanService';
+import type { IPlanRepository } from '../../../domain/plan/IPlanRepository';
+import type { Plan, CreatePlanDto } from '../../../domain/plan/Plan';
+import { PlanNotFoundError } from '../../../domain/plan/PlanErrors';
 
 const mockPlan: Plan = {
   id: 1,

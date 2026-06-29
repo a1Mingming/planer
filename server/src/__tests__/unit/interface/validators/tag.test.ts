@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CreateTagSchema } from '../../../../../interface/validators/tag';
+import { CreateTagSchema } from '../../../../interface/validators/tag';
 
 describe('CreateTagSchema', () => {
   it('accepts valid tag name', () => {

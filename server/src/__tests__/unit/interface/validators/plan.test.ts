@@ -3,7 +3,7 @@ import {
   CreatePlanSchema,
   UpdatePlanSchema,
   GetPlansSchema,
-} from '../../../../../interface/validators/plan';
+} from '../../../../interface/validators/plan';
 
 describe('CreatePlanSchema', () => {
   const validPayload = {

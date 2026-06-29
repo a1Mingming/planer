@@ -25,6 +25,8 @@
 test/
 ├── client/                  # 前端（端口 8000）
 │   ├── .umirc.ts            # 路由、代理配置
+│   ├── playwright.config.ts # E2E 测试配置
+│   ├── e2e/                 # Playwright E2E 测试
 │   └── src/
 │       ├── types/           # Plan、Tag、API 响应类型
 │       ├── services/        # fetch 封装（plan、tag）
@@ -39,7 +41,9 @@ test/
 │           ├── month.tsx    # 月视图
 │           └── day.tsx      # 日视图
 └── server/                  # 后端（端口 3001）
+    ├── vitest.config.ts     # 单元测试配置
     └── src/
+        ├── __tests__/       # vitest 单元 + 集成测试
         ├── domain/          # 实体、仓库接口、领域错误
         ├── application/     # PlanService、TagService
         ├── infrastructure/  # SQLite 仓库实现、migrate、seed
@@ -58,25 +62,21 @@ test/
 ```bash
 # 后端
 cd server
-npm install
+pnpm install
 
 # 前端
 cd client
 pnpm install
 ```
 
-> Windows + nvm-windows 用户，安装前先切换 Node 版本：
-> ```bash
-> nvmuse 20
-> command npm install   # 绕过 bash wrapper，使用真实 npm
-> ```
+> **Windows + nvm-windows 用户**：安装前先执行 `nvmuse 20` 切换到 Node 20，再运行 `pnpm install`。
 
 ### 启动开发服务器
 
 ```bash
 # 后端（新终端）
 cd server
-npm run dev       # http://localhost:3001
+pnpm dev          # http://localhost:3001
 
 # 前端（新终端）
 cd client
@@ -90,8 +90,8 @@ pnpm dev          # http://localhost:8000
 ```bash
 # 后端
 cd server
-npm run build     # 输出到 dist/
-npm run start     # 运行编译产物
+pnpm build        # 输出到 dist/
+pnpm start        # 运行编译产物
 
 # 前端
 cd client
@@ -131,3 +131,30 @@ pnpm build        # 输出到 dist/
 - 前端禁止 `any`（用 `unknown` + 类型收窄）、禁止内联样式（用 CSS Modules）、禁止 `console.log` 提交
 - API 调用全部封装在 `src/services/`，页面组件不直接调用 fetch
 - 状态管理仅用 `useState + useEffect`，不引入 Redux / Zustand
+
+## 测试
+
+### 后端单元 + 集成测试（vitest）
+
+```bash
+cd server
+pnpm test              # 运行所有测试
+pnpm test:watch        # 监听模式
+pnpm test:coverage     # 生成覆盖率报告
+```
+
+测试覆盖：PlanService / TagService 单元测试（mock repository）、zod validators 校验规则、SqlitePlanRepository / SqliteTagRepository 集成测试（SQLite `:memory:`）。
+
+### 前端 E2E 测试（Playwright）
+
+```bash
+# 先启动前后端 dev server，再执行：
+cd client
+pnpm test:e2e           # 有头模式运行（可见浏览器窗口）
+pnpm test:e2e:ui        # Playwright UI 交互模式（推荐调试）
+pnpm test:e2e:report    # 查看上次报告
+```
+
+> 首次运行需安装 Chromium：`npx playwright install chromium`
+
+测试覆盖：视图导航、计划 CRUD 流程、表单校验、移动端 390px 布局。API 通过 `page.route` mock，不依赖真实后端。所有 46 个用例在 chromium + mobile-chrome 两个 project 下均通过。

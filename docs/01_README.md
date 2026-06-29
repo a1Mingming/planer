@@ -13,7 +13,7 @@
 | 前端 | Umi 4 · React 18 · TypeScript · Ant Design 5 · Less |
 | 后端 | Express 4 · TypeScript · zod · morgan |
 | 数据存储 | SQLite（better-sqlite3，WAL 模式） |
-| 测试 | curl 手工接口验证 + 浏览器页面验收 |
+| 测试 | vitest（单元 + 集成）· Playwright（E2E）· curl（手工接口验证） |
 | 部署 | 本地开发模式（pnpm dev / pnpm dev） |
 | AI 工具 | Claude Code（claude-sonnet-4-6） |
 
@@ -65,7 +65,10 @@ pnpm dev
 ## 6. 测试执行
 
 ```bash
-# 验证后端接口
+# 后端自动化测试（先停止 dev server）
+cd server && pnpm install && pnpm test
+
+# 验证后端接口（后端启动后）
 curl "http://127.0.0.1:3001/api/tags"
 curl "http://127.0.0.1:3001/api/plans?view=month&date=2026-06"
 
@@ -73,6 +76,11 @@ curl "http://127.0.0.1:3001/api/plans?view=month&date=2026-06"
 curl -X POST http://127.0.0.1:3001/api/plans \
   -H "Content-Type: application/json" \
   -d '{"title":"测试计划","date":"2026-06-29","tags":["工作"],"done":false}'
+
+# 前端 E2E（前后端均启动后）
+cd client && pnpm install && npx playwright install chromium
+pnpm test:e2e        # 有头模式（可见浏览器）
+pnpm test:e2e:ui     # Playwright UI 调试模式
 ```
 
 ## 7. 演示路径
@@ -96,6 +104,5 @@ curl -X POST http://127.0.0.1:3001/api/plans \
 ## 9. 已知问题
 
 - 旧 Node 进程残留时，`localhost` 解析到 IPv6 导致代理 404（已通过将代理目标改为 `127.0.0.1` 规避）
-- 前端暂无单元测试，仅手工验收
 - 无用户认证，本地单用户使用
 - 无数据导出 / 备份功能
