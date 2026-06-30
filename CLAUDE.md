@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 个人日程计划管理应用，支持按年/月/日三级视图浏览和管理计划，移动端优先设计。
 
-- **前端** (`client/`)：Umi 4 + React 18 + TypeScript + Ant Design 5 — 端口 8000
+- **前端** (`client/`)：Umi 4 + React 18 + TypeScript + Ant Design **6** — 端口 8000
 - **后端** (`server/`)：Express + better-sqlite3 + TypeScript — 端口 3001
 - **包管理器**：前后端均使用 pnpm + Node 20
 
@@ -29,7 +29,7 @@ pnpm start    # 运行编译产物
 pnpm lint     # tsc --noEmit 类型检查
 ```
 
-### 前端（`client/`，待初始化）
+### 前端（`client/`）
 
 ```bash
 pnpm dev         # Umi 开发服务器，端口 8000
@@ -70,28 +70,78 @@ server/src/
 ## 前端代码规范
 
 - **禁止 `any`** — 改用 `unknown` + 类型收窄。
-- **禁止内联样式**（`style={{}}`）— 所有样式写入 `index.module.less` CSS Modules。例外：移动端 Modal 全屏等动态值。
+- **禁止内联样式**（`style={{}}`）— 所有样式写入 `index.module.less` CSS Modules。例外：移动端 Modal 全屏等动态值、SVG 动画属性。
 - **禁止提交 `console.log`**。
 - **只用绝对路径** — 使用 `@/` 别名（如 `import type { Plan } from '@/types/plan'`），禁止超过一级的 `../../`。
 - 组件结构：`ComponentName/index.tsx` + `ComponentName/index.module.less`。
 - 状态管理：局部用 `useState` + `useEffect`；跨组件共享用 `React.Context` 或 URL 参数，不引入 Redux/Zustand。
 - API 调用：全部封装在 `src/services/`，页面/组件不直接调用 fetch，使用 Umi 内置 `request`。
 
-## 前端架构（待实现）
+## Ant Design 主题配置
+
+**Ant Design 5 统一主题 token 通过 `ConfigProvider` 在 `layouts/index.tsx` 中注入**，所有子组件自动继承，不在各组件 `.less` 中单独覆盖颜色等基础 token。
+
+```tsx
+// layouts/index.tsx
+import { ConfigProvider } from 'antd';
+
+const antdTheme = {
+  token: {
+    colorPrimary: '#C84B31',
+    colorBgContainer: '#FDFAF7',
+    colorBorder: '#C4BFBA',
+    colorText: '#1C1917',
+    borderRadius: 4,
+    fontFamily: "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+  },
+};
+
+// <ConfigProvider theme={antdTheme}> 包裹整个布局
+```
+
+注意：本项目使用纯 `umi`，**不能**在 `.umirc.ts` 中使用 `antd` 配置 key（需要 `@umijs/plugin-antd` 才支持）。
+
+仅需在组件 `.less` 中覆盖结构性样式（如 Modal padding、header 背景色等）时，才使用 `:global(.ant-modal-content)` 等方式局部覆写。
+
+## 前端架构（已实现）
 
 ```
 client/src/
 ├── types/          # Plan、Tag、ViewMode、API 响应类型
 ├── services/       # getPlans、createPlan、updatePlan、deletePlan、getTags、createTag、deleteTag
-├── styles/         # variables.less — 响应式断点（@breakpoint-mobile: 768px）
-├── layouts/        # 主布局包装组件
-├── components/     # PlanForm（Modal）、PlanCard、FabButton
+├── styles/         # variables.less — 设计系统变量（颜色、字体、断点）
+├── layouts/        # 主布局（顶部导航，原生 button 替代 Ant Button）
+├── components/     # PlanForm（Modal）、PlanCard（原生 checkbox + 自定义标签）、FabButton（原生 button）
 └── pages/plans/    # year.tsx、month.tsx、day.tsx
 ```
 
 路由：`/plans/year/:year`、`/plans/month/:month`、`/plans/day/:date`，所有 `/api/*` 代理到 `http://localhost:3001`。
 
 移动端断点 768px：月视图在移动端从"左侧日历+右侧列表"切换为"顶部日期过滤器+按日分组列表"。
+
+年视图使用内联 SVG 环形进度（`RingProgress` 组件）替代 Ant Design Progress，避免引入额外 JS bundle。FabButton、导航箭头均使用原生 `<button>` + CSS Modules，减少对 Ant Design 的依赖。Ant Design 保留用于：Form、Modal、DatePicker、TimePicker、Select、Calendar、Skeleton、Result、Empty、Popconfirm、message。
+
+## 已知问题与解决方案
+
+### 浏览器控制台警告排查
+
+遇到控制台警告时，使用 Playwright 监听 `console` 事件批量捕获，无需手动逐页检查：
+
+```ts
+page.on('console', (msg) => {
+  console.log(`[${msg.type()}] ${msg.text()}`);
+});
+```
+
+在临时 E2E 测试文件中访问各页面、触发交互后打印收集到的消息，定位警告来源后再修复。
+
+### Ant Design 废弃 API
+
+升级 Ant Design 大版本后可能出现 `[antd: XxxComponent] xxx is deprecated` 警告，查阅对应版本迁移文档替换废弃 prop。可通过上述 Playwright 控制台捕获方法快速定位。
+
+### Umi 配置项无效
+
+`.umirc.ts` 中只能使用已安装插件支持的 config key。本项目未安装 `@umijs/plugin-antd`，**不能**使用 `antd` key。Ant Design 主题通过 `ConfigProvider` 注入（见"Ant Design 主题配置"章节）。
 
 ## Hookify 规则
 

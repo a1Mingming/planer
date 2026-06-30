@@ -90,8 +90,8 @@ test('shows error when submitting without title', async ({ page }) => {
   // Wait for form to be ready
   await expect(page.locator('.ant-form')).toBeVisible();
 
-  // Click 创建 without filling title (Ant Design CJK spacing: "创 建")
-  await page.locator('.ant-modal button', { hasText: '创' }).last().click();
+  // Submit button is now a native <button> with class btnSubmit
+  await page.locator('[class*="footer"] [class*="btnSubmit"]').click();
   await expect(page.locator('text=请输入标题')).toBeVisible();
 });
 
@@ -112,8 +112,8 @@ test('creates plan successfully and closes modal', async ({ page }) => {
   // Close any open picker by clicking on the title area
   await page.locator('.ant-modal-title').click();
 
-  // Click the primary submit button (创 建 with Ant Design spacing)
-  await page.locator('.ant-modal button', { hasText: '创' }).last().click();
+  // Submit button is now a native <button>
+  await page.locator('[class*="footer"] [class*="btnSubmit"]').click();
   // Modal closes after successful submit
   await expect(page.locator('.ant-modal')).toHaveCount(0);
 });
@@ -128,8 +128,8 @@ test('plan card shows done state when toggled', async ({ page }) => {
   const putPromise = page.waitForRequest(
     (req) => req.method() === 'PUT' && req.url().includes('/api/plans'),
   );
-  // Use click instead of check() for better Ant Design compatibility
-  await page.locator('.ant-checkbox').first().click();
+  // Checkbox is now a native <input type="checkbox">
+  await page.locator('[class*="checkbox"]').first().click();
   await putPromise;
 });
 
@@ -139,21 +139,20 @@ test('delete plan shows popconfirm then removes card', async ({ page }) => {
   await page.waitForLoadState('networkidle');
   await expect(page.locator('[class*="card"]')).toBeVisible();
 
-  // Hover over card to make actions visible (opacity: 0 -> 1 on hover)
+  // Hover over card to reveal action buttons (opacity 0 → 1)
   await page.locator('[class*="card"]').first().hover();
 
-  // Click the danger delete button (aria-label="delete" from DeleteOutlined)
-  await page.getByRole('button', { name: 'delete' }).click();
+  // Delete button is now a native <button> with class danger
+  await page.locator('[class*="card"] [class*="danger"]').first().click();
 
-  // Popconfirm appears — button text has Ant Design CJK spacing "删 除"
+  // Popconfirm appears
   await expect(page.locator('.ant-popconfirm')).toBeVisible();
 
-  // Set up DELETE request listener before clicking confirm
   const deletePromise = page.waitForRequest(
     (req) => req.method() === 'DELETE' && req.url().includes('/api/plans'),
   );
 
-  // Confirm deletion — use hasText to match "删 除" with spacing
-  await page.locator('.ant-popconfirm button', { hasText: '删' }).last().click();
+  // Confirm button inside Popconfirm is still an Ant Button
+  await page.locator('.ant-popconfirm .ant-btn-primary').click();
   await deletePromise;
 });

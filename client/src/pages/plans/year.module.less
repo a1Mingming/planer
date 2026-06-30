@@ -4,57 +4,179 @@
   position: relative;
 }
 
-.header {
+.pageHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid @ink;
+}
+
+.yearNum {
+  font-family: @font-display;
+  font-size: 36px;
+  font-weight: 700;
+  color: @ink;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.yearLabel {
+  font-size: 14px;
+  color: @ink-muted;
+  font-family: @font-display;
+}
+
+.navArrows {
+  margin-left: auto;
+  display: flex;
+  border: 1px solid @ink-faint;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.navArrow {
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: @ink-muted;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1;
+  font-family: @font-body;
 
-.title {
-  font-size: 20px;
-  font-weight: 600;
-  min-width: 80px;
-  text-align: center;
+  &:first-child {
+    border-right: 1px solid @ink-faint;
+  }
+
+  &:hover {
+    background: @accent-light;
+    color: @ink;
+  }
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  border: 1.5px solid @ink;
 
   @media (max-width: @breakpoint-mobile) {
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 .monthCard {
-  background: #fff;
-  border-radius: @border-radius;
-  padding: 16px;
+  background: @paper-white;
+  padding: 16px 14px 14px;
   cursor: pointer;
-  transition: box-shadow 0.2s;
-  min-height: 90px;
+  transition: background 0.15s;
+  border-right: 1px solid @ink-faint;
+  border-bottom: 1px solid @ink-faint;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: @accent-light;
+
+    .monthName {
+      color: @accent;
+    }
+  }
+
+  &:nth-child(4n) {
+    border-right: none;
+
+    @media (max-width: @breakpoint-mobile) {
+      border-right: 1px solid @ink-faint;
+    }
+  }
+
+  @media (max-width: @breakpoint-mobile) {
+    &:nth-child(3n) { border-right: none; }
+    &:nth-child(4n) { border-right: 1px solid @ink-faint; }
+  }
+
+  @media (max-width: 480px) {
+    &:nth-child(4n),
+    &:nth-child(3n) { border-right: 1px solid @ink-faint; }
+    &:nth-child(2n) { border-right: none; }
   }
 }
 
+.monthCardActive {
+  background: @accent-light;
+
+  .monthName {
+    color: @accent;
+  }
+}
+
+.monthTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
 .monthName {
+  font-family: @font-display;
+  font-size: 18px;
+  font-weight: 700;
+  color: @ink;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.monthNum {
+  font-size: 10px;
+  color: @ink-faint;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  margin-top: 3px;
+}
+
+.ringWrap {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.statsText {
+  font-size: 11px;
+  color: @ink-muted;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.statsDone {
   font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 8px;
+  font-weight: 700;
+  color: @ink;
+  font-family: @font-display;
 }
 
-.stats {
-  font-size: 13px;
-  color: #666;
+.statsTotal {
+  color: @ink-faint;
 }
 
-.empty {
-  font-size: 12px;
-  color: #bbb;
+.emptyLabel {
+  font-size: 11px;
+  color: @ink-faint;
+  font-style: italic;
+}
+
+.ring {
+  flex-shrink: 0;
 }

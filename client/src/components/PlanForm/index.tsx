@@ -106,7 +106,7 @@ export default function PlanForm({ open, initialDate, plan, onClose, onSaved }: 
       width={isMobile ? '100vw' : 480}
       style={isMobile ? { top: 0, padding: 0, maxWidth: '100vw' } : undefined}
       className={styles.modal}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form form={form} layout="vertical" validateTrigger="onBlur">
         <Form.Item
@@ -142,7 +142,7 @@ export default function PlanForm({ open, initialDate, plan, onClose, onSaved }: 
             mode="multiple"
             placeholder="选择标签"
             options={tags.map((t) => ({ value: t.name, label: t.name }))}
-            dropdownRender={(menu) => (
+            popupRender={(menu) => (
               <>
                 {menu}
                 <div className={styles.addTag}>

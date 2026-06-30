@@ -34,12 +34,6 @@ test('month view on mobile does not show desktop calendar', async ({ page }) => 
   }
 });
 
-test('month view on mobile shows DatePicker instead', async ({ page }) => {
-  await page.goto(`/plans/month/${thisMonth}`);
-  await page.waitForLoadState('networkidle');
-  await expect(page.locator('.ant-picker')).toBeVisible();
-});
-
 test('FAB is visible on mobile', async ({ page }) => {
   await page.goto(`/plans/month/${thisMonth}`);
   await page.waitForLoadState('networkidle');
@@ -56,7 +50,8 @@ test('FAB opens modal on mobile', async ({ page }) => {
 test('navigation header is visible on mobile', async ({ page }) => {
   await page.goto(`/plans/month/${thisMonth}`);
   await page.waitForLoadState('networkidle');
-  await expect(page.getByRole('button', { name: '年' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '月' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '日' })).toBeVisible();
+  // Nav buttons now have full text: 年览 / 月历 / 日程
+  await expect(page.getByRole('button', { name: '年览' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '月历' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '日程' })).toBeVisible();
 });

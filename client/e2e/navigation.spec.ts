@@ -39,26 +39,26 @@ test('redirects / to /plans/month', async ({ page }) => {
 
 test('header shows navigation buttons', async ({ page }) => {
   await page.goto('/plans/month');
-  await expect(page.getByRole('button', { name: '年' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '月' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '日' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '年览' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '月历' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '日程' })).toBeVisible();
 });
 
-test('clicking 年 navigates to year view', async ({ page }) => {
+test('clicking 年览 navigates to year view', async ({ page }) => {
   await page.goto('/plans/month');
-  await page.getByRole('button', { name: '年' }).click();
+  await page.getByRole('button', { name: '年览' }).click();
   await expect(page).toHaveURL(new RegExp(`/plans/year/${thisYear}`));
 });
 
-test('clicking 月 navigates to month view', async ({ page }) => {
+test('clicking 月历 navigates to month view', async ({ page }) => {
   await page.goto(`/plans/year/${thisYear}`);
-  await page.getByRole('button', { name: '月' }).click();
+  await page.getByRole('button', { name: '月历' }).click();
   await expect(page).toHaveURL(new RegExp(`/plans/month/${thisMonth}`));
 });
 
-test('clicking 日 navigates to day view', async ({ page }) => {
+test('clicking 日程 navigates to day view', async ({ page }) => {
   await page.goto('/plans/month');
-  await page.getByRole('button', { name: '日' }).click();
+  await page.getByRole('button', { name: '日程' }).click();
   await expect(page).toHaveURL(new RegExp(`/plans/day/${today}`));
 });
 
@@ -73,15 +73,14 @@ test('year view arrow buttons change the year', async ({ page }) => {
   await page.goto(`/plans/year/${thisYear}`);
   await page.waitForLoadState('networkidle');
   const prevYear = String(Number(thisYear) - 1);
-  // Left arrow button has aria-label "left" (from LeftOutlined icon)
-  await page.getByRole('button', { name: 'left' }).click();
+  // navArrow buttons: first is ‹ (prev), second is › (next)
+  await page.locator('[class*="navArrow"]').first().click();
   await expect(page).toHaveURL(new RegExp(`/plans/year/${prevYear}`));
 });
 
 test('month view shows current month label', async ({ page }) => {
   await page.goto(`/plans/month/${thisMonth}`);
   await page.waitForLoadState('networkidle');
-  // dayjs formats as YYYY年MM月 e.g. "2026年06月"
   const label = dayjs(thisMonth).format('YYYY年MM月');
   await expect(page.locator(`text=${label}`)).toBeVisible();
 });

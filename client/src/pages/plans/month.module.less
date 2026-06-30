@@ -4,34 +4,91 @@
   position: relative;
 }
 
-.nav {
+.pageHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid @ink;
+}
+
+.monthTitle {
+  font-family: @font-display;
+  font-size: 28px;
+  font-weight: 700;
+  color: @ink;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.monthSub {
+  font-size: 13px;
+  color: @ink-muted;
+  font-family: @font-display;
+}
+
+.navArrows {
+  margin-left: auto;
+  display: flex;
+  border: 1px solid @ink-faint;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.navArrow {
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: @ink-muted;
+  transition: background 0.15s, color 0.15s;
+  font-family: @font-body;
 
-.navTitle {
-  font-size: 18px;
-  font-weight: 600;
-  min-width: 120px;
-  text-align: center;
+  &:first-child {
+    border-right: 1px solid @ink-faint;
+  }
+
+  &:hover {
+    background: @accent-light;
+    color: @ink;
+  }
 }
 
 .desktop {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   align-items: flex-start;
 }
 
 .calendarPane {
-  width: 320px;
+  width: 300px;
   flex-shrink: 0;
-  background: #fff;
+  background: @paper-white;
+  border: 1px solid @ink-faint;
   border-radius: @border-radius;
-  padding: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  padding: 8px;
+
+  // Override Ant Calendar internal colors
+  :global(.ant-picker-calendar) {
+    background: transparent;
+  }
+
+  :global(.ant-picker-cell-selected .ant-picker-cell-inner) {
+    background: @ink;
+    color: @paper;
+    border-radius: 2px;
+  }
+
+  :global(.ant-picker-cell-today .ant-picker-cell-inner::before) {
+    border-color: @accent;
+    border-radius: 2px;
+  }
 }
 
 .listPane {
@@ -43,17 +100,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid @ink-faint;
+}
+
+.listDate {
+  font-family: @font-display;
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 12px;
-  padding: 0 4px;
+  color: @ink;
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: @primary-color;
+  background: @accent;
   margin: 2px auto 0;
 }
 
@@ -62,13 +125,16 @@
 }
 
 .dateGroup {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .dateGroupTitle {
+  font-family: @font-display;
   font-size: 13px;
   font-weight: 600;
-  color: #666;
+  color: @ink-muted;
   margin-bottom: 8px;
-  padding: 0 4px;
+  padding: 0 2px 6px;
+  border-bottom: 1px solid @ink-faint;
+  letter-spacing: 0.03em;
 }

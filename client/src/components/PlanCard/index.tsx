@@ -1,5 +1,4 @@
-import { Tag, Checkbox, Popconfirm, Button } from 'antd';
-import { EditOutlined, DeleteOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { Popconfirm } from 'antd';
 import type { Plan } from '@/types/plan';
 import styles from './index.module.less';
 
@@ -10,12 +9,14 @@ interface Props {
   onDelete: (id: number) => void;
 }
 
-const TAG_COLORS = ['blue', 'green', 'orange', 'purple', 'cyan', 'magenta'];
+const TAG_PALETTE = [
+  '#8B7355', '#5C7A6B', '#6B5B7A', '#7A5B5B', '#5B6E7A', '#7A6E5B',
+];
 
 function tagColor(name: string): string {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return TAG_COLORS[Math.abs(hash) % TAG_COLORS.length];
+  return TAG_PALETTE[Math.abs(hash) % TAG_PALETTE.length];
 }
 
 export default function PlanCard({ plan, onToggleDone, onEdit, onDelete }: Props) {
@@ -25,25 +26,26 @@ export default function PlanCard({ plan, onToggleDone, onEdit, onDelete }: Props
   return (
     <div className={`${styles.card} ${plan.done ? styles.done : ''}`}>
       <div className={styles.top}>
-        <Checkbox
+        <input
+          type="checkbox"
+          className={styles.checkbox}
           checked={plan.done}
           onChange={(e) => onToggleDone(plan.id, e.target.checked)}
         />
         <span className={styles.title}>{plan.title}</span>
         <div className={styles.actions}>
-          <Button
-            type="text"
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => onEdit(plan)}
-          />
+          <button className={styles.actionBtn} onClick={() => onEdit(plan)} title="编辑">
+            ✎
+          </button>
           <Popconfirm
             title="确认删除该计划？"
             onConfirm={() => onDelete(plan.id)}
             okText="删除"
             cancelText="取消"
           >
-            <Button type="text" size="small" icon={<DeleteOutlined />} danger />
+            <button className={`${styles.actionBtn} ${styles.danger}`} title="删除">
+              ✕
+            </button>
           </Popconfirm>
         </div>
       </div>
@@ -51,16 +53,21 @@ export default function PlanCard({ plan, onToggleDone, onEdit, onDelete }: Props
         <div className={styles.meta}>
           {plan.start_time && (
             <span className={styles.time}>
-              <ClockCircleOutlined />
               {plan.start_time}
-              {plan.end_time ? ` - ${plan.end_time}` : ''}
+              {plan.end_time ? ` – ${plan.end_time}` : ''}
             </span>
           )}
           <div className={styles.tags}>
             {visibleTags.map((t) => (
-              <Tag key={t} color={tagColor(t)}>{t}</Tag>
+              <span
+                key={t}
+                className={styles.tag}
+                style={{ borderColor: tagColor(t), color: tagColor(t) }}
+              >
+                {t}
+              </span>
             ))}
-            {hiddenCount > 0 && <Tag>+{hiddenCount}</Tag>}
+            {hiddenCount > 0 && <span className={styles.tagMore}>+{hiddenCount}</span>}
           </div>
         </div>
       )}

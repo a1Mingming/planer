@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'umi';
-import { Button, Skeleton, Result, Empty } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Skeleton, Result, Empty, Button } from 'antd';
 import dayjs from 'dayjs';
 import { getDayPlans, updatePlan, deletePlan } from '@/services/plan';
 import type { Plan } from '@/types/plan';
@@ -73,23 +72,24 @@ export default function DayPage() {
   const openEdit = (plan: Plan) => { setEditPlan(plan); setFormOpen(true); };
 
   const nowMinutes = dayjs().hour() * 60 + dayjs().minute();
-  const timelineStart = 0;
   const timelineEnd = 24 * 60;
 
   if (error) return <Result status="error" title="加载失败" extra={<Button onClick={load}>重试</Button>} />;
 
   return (
     <div className={styles.page}>
-      <div className={styles.nav}>
-        <Button type="text" icon={<LeftOutlined />} onClick={() => navigate(`/plans/day/${prevDate}`)} />
+      <div className={styles.pageHeader}>
         <span
-          className={styles.navTitle}
+          className={styles.dayTitle}
           onClick={() => navigate(`/plans/month/${currentDate.slice(0, 7)}`)}
         >
           {dayjs(currentDate).format('YYYY年MM月DD日')}
           {isToday && <span className={styles.todayBadge}>今天</span>}
         </span>
-        <Button type="text" icon={<RightOutlined />} onClick={() => navigate(`/plans/day/${nextDate}`)} />
+        <div className={styles.navArrows}>
+          <button className={styles.navArrow} onClick={() => navigate(`/plans/day/${prevDate}`)}>‹</button>
+          <button className={styles.navArrow} onClick={() => navigate(`/plans/day/${nextDate}`)}>›</button>
+        </div>
       </div>
 
       {loading ? (
@@ -118,27 +118,28 @@ export default function DayPage() {
                   <div
                     ref={nowLineRef}
                     className={styles.nowLine}
-                    style={{ top: `${((nowMinutes - timelineStart) / (timelineEnd - timelineStart)) * 100}%` }}
+                    style={{ top: `${(nowMinutes / timelineEnd) * 100}%` }}
                   />
                 )}
 
                 {timedPlans.map((plan) => {
                   const start = toMinutes(plan.start_time!);
                   const end = plan.end_time ? toMinutes(plan.end_time) : start + 30;
-                  const topPct = ((start - timelineStart) / (timelineEnd - timelineStart)) * 100;
-                  const heightPct = ((end - start) / (timelineEnd - timelineStart)) * 100;
+                  const topPct = (start / timelineEnd) * 100;
+                  const heightPct = ((end - start) / timelineEnd) * 100;
                   return (
                     <div
                       key={plan.id}
-                      className={`${styles.timeBlock} ${plan.done ? styles.done : ''}`}
+                      className={`${styles.timeBlock} ${plan.done ? styles.timeBlockDone : ''}`}
                       style={{
                         top: `${topPct}%`,
                         height: `max(${heightPct}%, 28px)`,
                       }}
+                      onClick={() => openEdit(plan)}
                     >
                       <div className={styles.blockTitle}>{plan.title}</div>
                       <div className={styles.blockTime}>
-                        {plan.start_time}{plan.end_time ? ` - ${plan.end_time}` : ''}
+                        {plan.start_time}{plan.end_time ? ` – ${plan.end_time}` : ''}
                       </div>
                     </div>
                   );
@@ -149,7 +150,7 @@ export default function DayPage() {
 
           {allDayPlans.length > 0 && (
             <div className={styles.allDay}>
-              <div className={styles.allDayTitle}>全天</div>
+              <div className={styles.sectionTitle}>全天</div>
               {allDayPlans.map((p) => (
                 <PlanCard
                   key={p.id}

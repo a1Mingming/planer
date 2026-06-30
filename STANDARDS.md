@@ -1,6 +1,6 @@
 # 代码规范文档
 
-> 版本：v1.1 | 日期：2026-06-30
+> 版本：v1.2 | 日期：2026-06-30
 
 ---
 
@@ -30,12 +30,33 @@ esbuildMinifyIIFE: true,
 ### 2.2 样式规范
 
 - 使用 **CSS Modules**（文件名：`index.module.less`）
-- 样式统一写入 `.less` 文件，禁止在 TSX 中使用 `style={{}}` 内联样式（除移动端动态样式如 Modal 全屏）
-- 使用 Ant Design 5 的 Design Token 做主题定制，不直接覆盖组件样式类名
-- 响应式断点变量统一定义在 `src/styles/variables.less`：
+- 样式统一写入 `.less` 文件，禁止在 TSX 中使用 `style={{}}` 内联样式（例外：移动端 Modal 全屏等动态计算值、SVG 动画属性）
+- **Ant Design 5 主题统一在 `layouts/index.tsx` 的 `ConfigProvider` 中配置**，不在各组件 `.less` 中单独覆盖颜色、字体等基础 token（注：本项目使用纯 `umi`，不支持 `.umirc.ts` 的 `antd` key）
+- 仅在需要覆盖 Ant Design 组件结构性样式时（如 Modal padding、header 背景），在组件 `.less` 中使用 `:global(.ant-xxx)` 局部覆写
+- 设计系统变量统一定义在 `src/styles/variables.less`，各 `.less` 文件通过 `@import '@/styles/variables.less'` 引入：
+
   ```less
+  // 断点
   @breakpoint-mobile: 768px;
-  @breakpoint-tablet: 1024px;
+
+  // 色板（墨纸设计系统）
+  @ink:          #1C1917;   // 主文字
+  @ink-muted:    #6B6560;   // 次要文字
+  @ink-faint:    #C4BFBA;   // 边框 / 分割线
+  @paper:        #F7F3EE;   // 页面背景
+  @paper-white:  #FDFAF7;   // 卡片背景
+  @accent:       #C84B31;   // 主色（朱砂红）
+  @accent-light: rgba(200, 75, 49, 0.08);
+  @done-color:   #9E9892;   // 已完成状态色
+
+  // 基础 token 同步 .umirc.ts
+  @primary-color: @accent;
+  @border-radius: 4px;
+  @plan-done-opacity: 0.45;
+
+  // 字体
+  @font-display: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  @font-body:    'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   ```
 
 ### 2.3 组件文件结构

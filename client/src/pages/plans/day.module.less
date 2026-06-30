@@ -4,40 +4,79 @@
   position: relative;
 }
 
-.nav {
+.pageHeader {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: baseline;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid @ink;
 }
 
-.navTitle {
-  font-size: 18px;
-  font-weight: 600;
+.dayTitle {
+  font-family: @font-display;
+  font-size: 26px;
+  font-weight: 700;
+  color: @ink;
+  line-height: 1;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  transition: color 0.15s;
 
   &:hover {
-    color: @primary-color;
+    color: @accent;
   }
 }
 
 .todayBadge {
+  font-family: @font-display;
   font-size: 11px;
-  background: @primary-color;
-  color: #fff;
-  border-radius: 4px;
-  padding: 1px 6px;
-  font-weight: 400;
+  background: @accent;
+  color: @paper;
+  border-radius: 2px;
+  padding: 2px 7px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+.navArrows {
+  margin-left: auto;
+  display: flex;
+  border: 1px solid @ink-faint;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.navArrow {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: @ink-muted;
+  transition: background 0.15s, color 0.15s;
+  font-family: @font-body;
+
+  &:first-child {
+    border-right: 1px solid @ink-faint;
+  }
+
+  &:hover {
+    background: @accent-light;
+    color: @ink;
+  }
 }
 
 .timeline {
   position: relative;
-  margin-bottom: 16px;
-  background: #fff;
+  margin-bottom: 20px;
+  background: @paper-white;
+  border: 1px solid @ink-faint;
   border-radius: @border-radius;
   padding: 8px 12px;
   overflow: hidden;
@@ -58,55 +97,67 @@
 }
 
 .hourLabel {
-  font-size: 11px;
-  color: #bbb;
-  width: 36px;
+  font-size: 10px;
+  color: @ink-faint;
+  width: 34px;
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
 }
 
 .hourLine {
   flex: 1;
   height: 1px;
-  background: #f0f0f0;
+  background: @ink-faint;
+  opacity: 0.5;
 }
 
 .nowLine {
   position: absolute;
   left: 0;
   right: 0;
-  height: 2px;
-  background: #ff4d4f;
+  height: 1.5px;
+  background: @accent;
   z-index: 10;
 
   &::before {
     content: '';
     position: absolute;
-    left: 42px;
-    top: -4px;
-    width: 10px;
-    height: 10px;
+    left: 40px;
+    top: -3.5px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: #ff4d4f;
+    background: @accent;
   }
 }
 
 .timeBlock {
   position: absolute;
-  left: 44px;
+  left: 42px;
   right: 8px;
-  background: #e6f4ff;
-  border-left: 3px solid @primary-color;
-  border-radius: 4px;
+  background: @accent-light;
+  border-left: 2.5px solid @accent;
+  border-radius: 2px;
   padding: 4px 8px;
   overflow: hidden;
   z-index: 5;
   cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(200, 75, 49, 0.14);
+  }
 }
 
-.done {
-  opacity: 0.5;
-  background: #f5f5f5;
-  border-color: #d9d9d9;
+.timeBlockDone {
+  opacity: 0.4;
+  background: rgba(28, 25, 23, 0.04);
+  border-color: @ink-faint;
+
+  &:hover {
+    background: rgba(28, 25, 23, 0.06);
+  }
 }
 
 .blockTitle {
@@ -115,22 +166,30 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: @ink;
+  font-family: @font-body;
 }
 
 .blockTime {
-  font-size: 11px;
-  color: #888;
+  font-size: 10px;
+  color: @ink-muted;
+  font-variant-numeric: tabular-nums;
 }
 
 .allDay {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
-.allDayTitle {
-  font-size: 13px;
+.sectionTitle {
+  font-family: @font-display;
+  font-size: 12px;
   font-weight: 600;
-  color: #666;
-  margin-bottom: 8px;
+  color: @ink-muted;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid @ink-faint;
 }
 
 .timedList {

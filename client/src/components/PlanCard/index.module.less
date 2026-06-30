@@ -1,33 +1,74 @@
 @import '@/styles/variables.less';
 
 .card {
-  background: #fff;
+  background: @paper-white;
+  border: 1px solid @ink-faint;
+  border-left: 3px solid @ink-faint;
   border-radius: @border-radius;
-  padding: 12px 14px;
-  margin-bottom: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  transition: opacity 0.2s;
+  padding: 11px 14px 11px 12px;
+  margin-bottom: 6px;
+  transition: border-left-color 0.2s, box-shadow 0.15s;
+
+  &:hover {
+    border-left-color: @accent;
+    box-shadow: 2px 2px 0 rgba(28, 25, 23, 0.06);
+
+    .actions {
+      opacity: 1;
+    }
+  }
 }
 
 .done {
   opacity: @plan-done-opacity;
+  border-left-color: @ink-faint !important;
 
   .title {
     text-decoration: line-through;
+    text-decoration-color: @done-color;
   }
 }
 
 .top {
   display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.checkbox {
+  margin-top: 2px;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid @ink;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  transition: background 0.15s;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+
+  &:checked {
+    background: @ink;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 10 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3.5l3 3 5-5' stroke='%23FDFAF7' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-size: 10px 8px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-color: @ink;
+  }
 }
 
 .title {
   flex: 1;
   font-size: 14px;
-  color: #1a1a1a;
+  line-height: 1.5;
+  color: @ink;
   word-break: break-all;
+  font-family: @font-body;
 }
 
 .actions {
@@ -35,31 +76,79 @@
   gap: 2px;
   opacity: 0;
   transition: opacity 0.15s;
+  flex-shrink: 0;
+}
 
-  .card:hover & {
-    opacity: 1;
+.actionBtn {
+  padding: 2px 6px;
+  font-size: 13px;
+  color: @ink-muted;
+  background: none;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+
+  &:hover {
+    color: @ink;
+    background: @accent-light;
+  }
+}
+
+.danger {
+  &:hover {
+    color: @accent;
+    background: @accent-light;
   }
 }
 
 .meta {
-  margin-top: 8px;
+  margin-top: 7px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  padding-left: 24px;
+  padding-left: 26px;
 }
 
 .time {
-  font-size: 12px;
-  color: #888;
+  font-size: 11px;
+  color: @ink-muted;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
+  font-variant-numeric: tabular-nums;
+
+  &::before {
+    content: '◷';
+    font-size: 10px;
+  }
 }
 
 .tags {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+}
+
+.tag {
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 2px;
+  border: 1px solid @ink-faint;
+  color: @ink-muted;
+  background: transparent;
+  letter-spacing: 0.02em;
+  font-family: @font-body;
+  line-height: 1.6;
+}
+
+.tagMore {
+  font-size: 11px;
+  padding: 1px 6px;
+  color: @ink-faint;
+  border: 1px dashed @ink-faint;
+  border-radius: 2px;
+  line-height: 1.6;
 }

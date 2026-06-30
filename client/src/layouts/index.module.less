@@ -4,41 +4,100 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f5f5f5;
+  background: @paper;
 }
 
 .header {
-  background: #fff;
-  padding: 0 24px;
-  height: 56px;
+  background: @paper-white;
+  border-bottom: 1.5px solid @ink;
+  padding: 0 32px;
+  height: 58px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 100;
+
+  @media (max-width: @breakpoint-mobile) {
+    padding: 0 16px;
+    height: 52px;
+  }
 }
 
 .logo {
-  font-size: 18px;
-  font-weight: 600;
-  color: @primary-color;
+  font-family: @font-display;
+  font-size: 20px;
+  font-weight: 700;
+  color: @ink;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &::before {
+    content: '◆';
+    color: @accent;
+    font-size: 10px;
+  }
 }
 
 .nav {
   display: flex;
-  gap: 4px;
+  gap: 0;
+  border: 1.5px solid @ink;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.navBtn {
+  padding: 0 20px;
+  height: 34px;
+  font-family: @font-display;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: @ink;
+  background: transparent;
+  border: none;
+  border-right: 1px solid @ink;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  outline: none;
+  white-space: nowrap;
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &:hover {
+    background: @accent-light;
+  }
+
+  @media (max-width: @breakpoint-mobile) {
+    padding: 0 14px;
+    font-size: 13px;
+  }
+}
+
+.navBtnActive {
+  background: @ink;
+  color: @paper;
+
+  &:hover {
+    background: @ink;
+    color: @paper;
+  }
 }
 
 .main {
   flex: 1;
-  padding: 16px;
-  max-width: 1200px;
+  padding: 28px 32px;
+  max-width: 1160px;
   width: 100%;
   margin: 0 auto;
 
   @media (max-width: @breakpoint-mobile) {
-    padding: 12px 8px;
+    padding: 16px 12px;
   }
 }

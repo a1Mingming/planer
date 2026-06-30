@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'umi';
-import { Button, Calendar, Skeleton, Result, Empty, DatePicker } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Calendar, Skeleton, Result, Empty, Button } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { getMonthPlans, updatePlan, deletePlan } from '@/services/plan';
 import type { Plan } from '@/types/plan';
@@ -94,33 +93,28 @@ export default function MonthPage() {
     groupedByDate[p.date].push(p);
   });
 
+  const monthDayjs = dayjs(currentMonth);
+
   return (
     <div className={styles.page}>
-      <div className={styles.nav}>
-        <Button type="text" icon={<LeftOutlined />} onClick={() => navigate(`/plans/month/${prevMonth}`)} />
-        <span className={styles.navTitle}>
-          {dayjs(currentMonth).format('YYYY年MM月')}
-        </span>
-        <Button type="text" icon={<RightOutlined />} onClick={() => navigate(`/plans/month/${nextMonth}`)} />
+      <div className={styles.pageHeader}>
+        <span className={styles.monthTitle}>{monthDayjs.format('YYYY年MM月')}</span>
+        <span className={styles.monthSub}>月历</span>
+        <div className={styles.navArrows}>
+          <button className={styles.navArrow} onClick={() => navigate(`/plans/month/${prevMonth}`)}>‹</button>
+          <button className={styles.navArrow} onClick={() => navigate(`/plans/month/${nextMonth}`)}>›</button>
+        </div>
       </div>
 
       {loading ? (
         <Skeleton active paragraph={{ rows: 8 }} />
       ) : isMobile ? (
-        // Mobile: DatePicker + grouped list
         <div>
-          <div className={styles.mobilePicker}>
-            <DatePicker
-              picker="month"
-              value={dayjs(currentMonth)}
-              onChange={(d) => d && navigate(`/plans/month/${d.format('YYYY-MM')}`)}
-              allowClear={false}
-            />
-          </div>
+          <div className={styles.mobilePicker} />
           {Object.keys(groupedByDate).sort().map((date) => (
             <div key={date} className={styles.dateGroup}>
               <div className={styles.dateGroupTitle}>
-                {dayjs(date).format('MM月DD日')} ({groupedByDate[date].length})
+                {dayjs(date).format('MM月DD日')} &nbsp;({groupedByDate[date].length})
               </div>
               {groupedByDate[date].map((p) => (
                 <PlanCard
@@ -140,7 +134,6 @@ export default function MonthPage() {
           )}
         </div>
       ) : (
-        // Desktop: calendar + day list
         <div className={styles.desktop}>
           <div className={styles.calendarPane}>
             <Calendar
@@ -157,7 +150,7 @@ export default function MonthPage() {
           </div>
           <div className={styles.listPane}>
             <div className={styles.listHeader}>
-              <span>{dayjs(selectedDate).format('MM月DD日')}</span>
+              <span className={styles.listDate}>{dayjs(selectedDate).format('MM月DD日')}</span>
               <Button size="small" type="primary" onClick={() => openCreate()}>+ 新建</Button>
             </div>
             {dayPlans.length === 0 ? (
