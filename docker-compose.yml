@@ -34,6 +34,8 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/app.conf
 
 volumes:
   sqlite_data:

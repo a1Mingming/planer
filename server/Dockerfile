@@ -3,7 +3,7 @@ FROM node:20-alpine AS builder
 
 # better-sqlite3 is a native module — node-gyp needs python3/make/g++ to compile it
 RUN apk add --no-cache python3 make g++
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ FROM node:20-alpine AS runner
 # Build tools also needed in runner: pnpm --prod reinstalls better-sqlite3
 # and recompiles its .node binary for this exact Alpine/Node version.
 RUN apk add --no-cache python3 make g++
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 WORKDIR /app
 

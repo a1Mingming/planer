@@ -10,6 +10,7 @@ export default defineConfig({
     { path: '/plans/day/:date', component: '@/pages/plans/day' },
   ],
   npmClient: 'pnpm',
+  esbuildMinifyIIFE: true,
   proxy: {
     '/api': {
       target: 'http://127.0.0.1:3001',
