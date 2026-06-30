@@ -3,5 +3,9 @@ dist/
 .env
 .env.local
 *.log
+*.tar
+*.tar.gz
+*.db-shm
+*.db-wal
 .DS_Store
 Thumbs.db
