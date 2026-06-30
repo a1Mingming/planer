@@ -1,18 +1,37 @@
 @breakpoint-mobile: 768px;
 
-// Design system — ink-on-paper editorial
-@ink:          #1C1917;
-@ink-muted:    #6B6560;
-@ink-faint:    #C4BFBA;
-@paper:        #F7F3EE;
-@paper-white:  #FDFAF7;
-@accent:       #C84B31;
-@accent-light: rgba(200, 75, 49, 0.08);
-@done-color:   #9E9892;
+// Design system — dreamy theme (CSS variable bridge)
+// These Less vars are used at compile time; runtime theming uses CSS custom props in global.less
 
-@primary-color: @accent;
-@border-radius: 4px;
-@plan-done-opacity: 0.45;
+@bg:           #F5F0FF;
+@bg-surface:   #FAF7FF;
+@bg-card:      rgba(255,255,255,0.82);
+@glass-border: rgba(160,100,255,0.14);
 
-@font-display: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+@text:         #2A1860;
+@text-muted:   #8B72C8;
+@text-faint:   #C4B0EC;
+
+@purple:       #8B5CF6;
+@purple-light: #F0E8FF;
+@pink:         #F472B6;
+@pink-light:   #FFF0F8;
+@mint:         #34D399;
+@yellow:       #FBBF24;
+@done-color:   #D4C8F0;
+
+// Legacy aliases used in Less files that haven't migrated to var()
+@ink:          @text;
+@ink-muted:    @text-muted;
+@ink-faint:    @text-faint;
+@paper:        @bg;
+@paper-white:  @bg-surface;
+@accent:       @purple;
+@accent-light: @purple-light;
+
+@primary-color:       @purple;
+@border-radius:       12px;
+@plan-done-opacity:   0.45;
+
+@font-display: 'Nunito', 'Noto Sans SC', sans-serif;
 @font-body:    'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;

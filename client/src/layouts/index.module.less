@@ -1,92 +1,147 @@
-@import '@/styles/variables.less';
-
 .layout {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: @paper;
+  background: var(--bg);
+  position: relative;
+  z-index: 1;
 }
 
 .header {
-  background: @paper-white;
-  border-bottom: 1.5px solid @ink;
+  background: rgba(250, 247, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
   padding: 0 32px;
-  height: 58px;
+  height: 62px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 1px 0 var(--glass-border);
+  transition: background 0.3s, border-color 0.3s;
 
-  @media (max-width: @breakpoint-mobile) {
+  @media (max-width: 768px) {
     padding: 0 16px;
-    height: 52px;
+    height: 56px;
   }
 }
 
+.dark .header {
+  background: rgba(15, 10, 30, 0.88);
+}
+
 .logo {
-  font-family: @font-display;
+  font-family: 'Nunito', 'Noto Sans SC', sans-serif;
   font-size: 20px;
-  font-weight: 700;
-  color: @ink;
-  letter-spacing: 0.04em;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
+}
 
-  &::before {
-    content: '◆';
-    color: @accent;
-    font-size: 10px;
-  }
+.logoStar {
+  display: inline-block;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(135deg, var(--yellow), var(--pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: twinkle 2.5s ease-in-out infinite alternate;
+  font-size: 16px;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.6; transform: scale(0.88) rotate(-10deg); }
+  to   { opacity: 1;   transform: scale(1.12) rotate(10deg); }
 }
 
 .nav {
   display: flex;
-  gap: 0;
-  border: 1.5px solid @ink;
-  border-radius: 3px;
-  overflow: hidden;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  padding: 4px;
+  backdrop-filter: blur(8px);
+
+  @media (max-width: 768px) {
+    gap: 2px;
+  }
+}
+
+.dark .nav {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .navBtn {
-  padding: 0 20px;
-  height: 34px;
-  font-family: @font-display;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  color: @ink;
+  padding: 0 18px;
+  height: 32px;
+  font-family: 'Nunito', 'Noto Sans SC', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
   background: transparent;
   border: none;
-  border-right: 1px solid @ink;
+  border-radius: 100px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: color 0.15s, background 0.15s;
   outline: none;
   white-space: nowrap;
 
-  &:last-child {
-    border-right: none;
-  }
-
   &:hover {
-    background: @accent-light;
+    color: var(--text);
+    background: rgba(139, 92, 246, 0.08);
   }
 
-  @media (max-width: @breakpoint-mobile) {
+  @media (max-width: 768px) {
     padding: 0 14px;
-    font-size: 13px;
+    font-size: 12px;
   }
 }
 
 .navBtnActive {
-  background: @ink;
-  color: @paper;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  color: #fff !important;
+  font-weight: 700;
+  box-shadow: 0 3px 12px var(--purple-glow);
 
   &:hover {
-    background: @ink;
-    color: @paper;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: #fff;
+  }
+}
+
+.themeBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  backdrop-filter: blur(8px);
+
+  &:hover {
+    color: var(--purple);
+    border-color: var(--purple);
+    box-shadow: 0 0 10px var(--purple-glow);
+    transform: scale(1.1);
   }
 }
 
@@ -96,8 +151,10 @@
   max-width: 1160px;
   width: 100%;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 
-  @media (max-width: @breakpoint-mobile) {
+  @media (max-width: 768px) {
     padding: 16px 12px;
   }
 }

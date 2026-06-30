@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向 F — 星云梦幻</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0F0A1E;
+    --bg-card:   rgba(255,255,255,0.06);
+    --bg-hover:  rgba(255,255,255,0.1);
+    --glass-border: rgba(255,255,255,0.12);
+    --text:      #F0EEFF;
+    --text-muted:#9B8FCC;
+    --text-faint:#4A3F7A;
+    --pink:      #FF6AC2;
+    --pink-glow: rgba(255,106,194,0.3);
+    --purple:    #B06BFF;
+    --purple-glow:rgba(176,107,255,0.3);
+    --blue:      #6AB0FF;
+    --mint:      #6EFFD0;
+    --yellow:    #FFE46A;
+    --done:      #3D3360;
+    --font:      'Nunito', 'Noto Sans SC', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.65;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Stars */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 42% 8%,  rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 70% 15%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 35%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 75%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5%  90%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Nebula blobs */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 15% 25%, rgba(176,107,255,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 35% at 85% 65%, rgba(255,106,194,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 30% at 50% 90%, rgba(106,176,255,0.12) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    background: rgba(15,10,30,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 0 32px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: var(--font);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    background: linear-gradient(135deg, var(--pink), var(--purple), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-star {
+    font-size: 18px;
+    -webkit-text-fill-color: transparent;
+    background: linear-gradient(135deg, var(--yellow), var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: twinkle 2s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.7; transform: scale(0.9); }
+    to   { opacity: 1;   transform: scale(1.1); }
+  }
+
+  .nav {
+    display: flex;
+    gap: 4px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    padding: 4px;
+  }
+  .nav-btn {
+    padding: 0 18px;
+    height: 32px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+  }
+  .nav-btn:hover {
+    color: var(--text);
+    background: rgba(255,255,255,0.08);
+  }
+  .nav-btn.active {
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 4px 16px var(--pink-glow);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 36px 24px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-header { margin-bottom: 28px; }
+  .page-title {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 30%, var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+  }
+  .page-sub {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* STAT CHIPS */
+  .stat-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .stat-chip {
+    padding: 8px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .stat-chip .num {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .stat-chip .lbl { color: var(--text-muted); font-weight: 500; }
+  .stat-chip.pink  .num { color: var(--pink); }
+  .stat-chip.mint  .num { color: var(--mint); }
+  .stat-chip.blue  .num { color: var(--blue); }
+
+  /* MONTH PILLS */
+  .month-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .month-pill {
+    padding: 5px 14px;
+    border-radius: 100px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+    backdrop-filter: blur(8px);
+  }
+  .month-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--text-faint);
+    transition: background 0.2s;
+  }
+  .month-pill:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+  .month-pill.active {
+    background: linear-gradient(135deg, rgba(255,106,194,0.2), rgba(176,107,255,0.2));
+    border-color: rgba(176,107,255,0.4);
+    color: var(--text);
+  }
+  .month-pill.active .dot { background: var(--pink); box-shadow: 0 0 6px var(--pink-glow); }
+  .month-pill .pct { color: var(--text-faint); font-size: 10px; }
+  .month-pill.active .pct { color: var(--purple); }
+
+  /* DATE SECTION */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 24px 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .section-label::before { content: '✦'; color: var(--pink); font-size: 10px; }
+  .section-label::after  { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
+
+  /* CARDS */
+  .card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  }
+  .card:hover {
+    background: var(--bg-hover);
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .card.done { opacity: 0.4; }
+
+  /* color accent strip */
+  .card .strip {
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: linear-gradient(to bottom, var(--pink), var(--purple));
+  }
+  .card.green-strip .strip { background: linear-gradient(to bottom, var(--mint), var(--blue)); }
+  .card.done .strip { background: var(--done); }
+
+  /* checkbox */
+  .cb {
+    width: 20px; height: 20px;
+    border: 2px solid var(--text-faint);
+    border-radius: 50%;
+    background: transparent;
+    flex-shrink: 0;
+    margin-top: 0px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .cb:hover { border-color: var(--pink); box-shadow: 0 0 8px var(--pink-glow); }
+  .cb.checked {
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    border: none;
+    box-shadow: 0 0 12px var(--pink-glow);
+  }
+  .cb.checked::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .card-body { flex: 1; min-width: 0; padding-left: 8px; }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .card.done .card-title { text-decoration: line-through; color: var(--done); }
+  .card-meta {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: rgba(255,106,194,0.15);
+    color: var(--pink);
+    border: 1px solid rgba(255,106,194,0.25);
+  }
+  .tag.mint {
+    background: rgba(110,255,208,0.12);
+    color: var(--mint);
+    border-color: rgba(110,255,208,0.25);
+  }
+  .tag.blue {
+    background: rgba(106,176,255,0.12);
+    color: var(--blue);
+    border-color: rgba(106,176,255,0.25);
+  }
+
+  .card-actions {
+    opacity: 0; transition: opacity 0.15s;
+    display: flex; gap: 6px;
+    flex-shrink: 0;
+  }
+  .card:hover .card-actions { opacity: 1; }
+  .action-btn {
+    width: 30px; height: 30px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.1s;
+  }
+  .action-btn:hover { color: var(--purple); border-color: var(--purple); background: rgba(176,107,255,0.1); }
+  .action-btn.danger:hover { color: var(--pink); border-color: var(--pink); background: var(--pink-glow); }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 26px;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px var(--pink-glow), 0 8px 40px var(--purple-glow);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 50;
+    animation: float 4s ease-in-out infinite;
+  }
+  .fab:hover {
+    transform: scale(1.1) rotate(45deg);
+    box-shadow: 0 8px 32px var(--pink-glow), 0 12px 48px var(--purple-glow);
+    animation: none;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-5px); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-star">✦</span>
+    日程
+  </div>
+  <nav class="nav">
+    <button class="nav-btn">年览</button>
+    <button class="nav-btn active">月历</button>
+    <button class="nav-btn">日程</button>
+  </nav>
+</header>
+
+<main>
+  <div class="page-header">
+    <div class="page-title">六月 · 2025</div>
+    <div class="page-sub">你有 6 项计划待完成 ✨</div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-chip pink"><span class="num">9</span><span class="lbl">全部</span></div>
+    <div class="stat-chip mint"><span class="num">3</span><span class="lbl">完成</span></div>
+    <div class="stat-chip blue"><span class="num">6</span><span class="lbl">待办</span></div>
+  </div>
+
+  <!-- Month pills -->
+  <div class="month-row">
+    <div class="month-pill"><span class="dot"></span>一月<span class="pct">75%</span></div>
+    <div class="month-pill"><span class="dot"></span>二月<span class="pct">60%</span></div>
+    <div class="month-pill"><span class="dot"></span>三月<span class="pct">100%</span></div>
+    <div class="month-pill"><span class="dot"></span>四月<span class="pct">50%</span></div>
+    <div class="month-pill"><span class="dot"></span>五月<span class="pct">0%</span></div>
+    <div class="month-pill active"><span class="dot"></span>六月<span class="pct">33%</span></div>
+  </div>
+
+  <div class="section-label">6月30日 · 周一</div>
+
+  <div class="card">
+    <div class="strip"></div>
+    <div class="cb"></div>
+    <div class="card-body">
+      <div class="card-title">完成 Q2 产品路线图评审</div>
+      <div class="card-meta">🕙 10:00 — 11:30</div>
+      <div class="card-tags"><span class="tag">工作</span><span class="tag blue">会议</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+
+  <div class="card green-strip">
+    <div class="strip"></div>
+    <div class="cb"></div>
+    <div class="card-body">
+      <div class="card-title">准备周五的技术分享材料</div>
+      <div class="card-meta">🗓 全天</div>
+      <div class="card-tags"><span class="tag mint">学习</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="strip"></div>
+    <div class="cb checked"></div>
+    <div class="card-body">
+      <div class="card-title">更新依赖包版本</div>
+      <div class="card-meta">🕘 09:00 — 09:30</div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+
+  <div class="section-label">6月28日 · 周六</div>
+
+  <div class="card done green-strip">
+    <div class="strip"></div>
+    <div class="cb checked"></div>
+    <div class="card-body">
+      <div class="card-title">阅读《SICP》第三章</div>
+      <div class="card-meta">🕑 14:00 — 16:00</div>
+      <div class="card-tags"><span class="tag mint">学习</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+</main>
+
+<button class="fab" aria-label="新建计划">+</button>
+
+</body>
+</html>

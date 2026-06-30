@@ -10,7 +10,7 @@ interface Props {
 }
 
 const TAG_PALETTE = [
-  '#8B7355', '#5C7A6B', '#6B5B7A', '#7A5B5B', '#5B6E7A', '#7A6E5B',
+  '#8B5CF6', '#F472B6', '#34D399', '#60A5FA', '#FBBF24', '#A78BFA',
 ];
 
 function tagColor(name: string): string {

@@ -99,13 +99,19 @@ export default function PlanForm({ open, initialDate, plan, onClose, onSaved }: 
 
   return (
     <Modal
-      title={isEdit ? '编辑计划' : '新建计划'}
+      title={
+        <div className={styles.modalTitle}>
+          <span>{isEdit ? '编辑计划' : '新建计划'}</span>
+          <button className={styles.closeBtn} onClick={onClose} aria-label="关闭">✕</button>
+        </div>
+      }
       open={open}
       onCancel={onClose}
       footer={null}
       width={isMobile ? '100vw' : 480}
       style={isMobile ? { top: 0, padding: 0, maxWidth: '100vw' } : undefined}
       className={styles.modal}
+      closeIcon={null}
       destroyOnHidden
     >
       <Form form={form} layout="vertical" validateTrigger="onBlur">

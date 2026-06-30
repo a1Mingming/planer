@@ -37,6 +37,29 @@ pnpm build       # 生产构建
 pnpm lint        # @umijs/lint
 ```
 
+### Playwright E2E 测试（`client/`）
+
+**⚠️ 必须在 `client/` 目录下执行**，否则 Playwright 找不到配置文件。
+
+```bash
+pnpm test:e2e                        # 运行全部 E2E 测试
+pnpm test:e2e -- <spec>              # 运行指定测试文件
+pnpm test:e2e -- <spec>:<行号>        # 运行指定测试用例
+pnpm test:e2e:ui                      # Playwright UI 模式调试
+pnpm test:e2e:report                  # 查看上次测试报告
+```
+
+示例：
+```bash
+cd client
+pnpm test:e2e -- hover-clipping.spec.ts
+pnpm test:e2e -- hover-clipping.spec.ts:107  # 只跑第 107 行的用例
+```
+
+**测试输出**：失败截图/视频存放在 `client/e2e/test-output/`（已 gitignore）。
+
+**前提**：测试依赖前端 dev server 在 `localhost:8000` 运行（`pnpm dev`），API 调用通过 `page.route()` mock，不需要后端运行。
+
 ## 后端架构（DDD 标准四层）
 
 依赖方向：`interface → application → domain`，`infrastructure` 实现 `domain` 中定义的接口。

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向 G — 浅色科技 · 电路板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #EEF2FF;
+    --bg-surface:  #F6F9FF;
+    --bg-card:     rgba(255,255,255,0.82);
+    --bg-card-hover: rgba(255,255,255,0.96);
+    --glass-border: rgba(0,102,255,0.12);
+    --glass-border-strong: rgba(0,102,255,0.28);
+    --text:        #0D1B3E;
+    --text-mid:    #2E4A7A;
+    --text-muted:  #6B82B0;
+    --text-faint:  #A8BCDF;
+    --blue:        #0066FF;
+    --blue-light:  #E8F0FF;
+    --blue-glow:   rgba(0,102,255,0.18);
+    --cyan:        #00BBDD;
+    --cyan-light:  #E0F9FF;
+    --cyan-glow:   rgba(0,187,221,0.2);
+    --green:       #00C875;
+    --done:        #C8D6EF;
+    --shadow-sm:   0 2px 8px rgba(13,27,62,0.07), 0 0 0 1px rgba(0,102,255,0.06);
+    --shadow-md:   0 4px 20px rgba(13,27,62,0.1), 0 0 0 1px rgba(0,102,255,0.1);
+    --shadow-blue: 0 4px 20px rgba(0,102,255,0.2);
+    --font:        'Inter', 'Noto Sans SC', sans-serif;
+    --font-mono:   'JetBrains Mono', monospace;
+    --radius:      12px;
+    --radius-sm:   8px;
+    --radius-tag:  6px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ─── SVG CIRCUIT BOARD BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cstyle%3E.l%7Bstroke:%230066FF;stroke-width:0.6;fill:none;opacity:0.12%7D.d%7Bfill:%230066FF;opacity:0.14%7D%3C/style%3E%3C/defs%3E%3Cline class='l' x1='0' y1='40' x2='60' y2='40'/%3E%3Cline class='l' x1='60' y1='40' x2='60' y2='0'/%3E%3Ccircle class='d' cx='60' cy='40' r='3'/%3E%3Cline class='l' x1='0' y1='100' x2='40' y2='100'/%3E%3Cline class='l' x1='40' y1='100' x2='40' y2='140'/%3E%3Cline class='l' x1='40' y1='140' x2='100' y2='140'/%3E%3Ccircle class='d' cx='40' cy='100' r='3'/%3E%3Ccircle class='d' cx='40' cy='140' r='2'/%3E%3Cline class='l' x1='100' y1='0' x2='100' y2='60'/%3E%3Cline class='l' x1='100' y1='60' x2='160' y2='60'/%3E%3Ccircle class='d' cx='100' cy='60' r='3'/%3E%3Cline class='l' x1='160' y1='60' x2='160' y2='120'/%3E%3Cline class='l' x1='160' y1='120' x2='200' y2='120'/%3E%3Ccircle class='d' cx='160' cy='120' r='2.5'/%3E%3Cline class='l' x1='120' y1='160' x2='120' y2='200'/%3E%3Cline class='l' x1='80' y1='200' x2='80' y2='170'/%3E%3Cline class='l' x1='80' y1='170' x2='120' y2='170'/%3E%3Ccircle class='d' cx='120' cy='170' r='2'/%3E%3Crect class='l' x='90' y='88' width='20' height='12' rx='2'/%3E%3Crect class='l' x='30' y='48' width='16' height='10' rx='2'/%3E%3Cline class='l' x1='30' y1='53' x2='0' y2='53'/%3E%3Cline class='l' x1='46' y1='53' x2='60' y2='53'/%3E%3Cline class='l' x1='90' y1='94' x2='60' y2='94'/%3E%3Cline class='l' x1='110' y1='94' x2='140' y2='94'/%3E%3Cline class='l' x1='140' y1='94' x2='140' y2='60'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Light gradient overlay */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 85% 10%, rgba(0,187,221,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 60% at 5%  90%, rgba(0,102,255,0.06) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: rgba(246,249,255,0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 0 36px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 0 rgba(0,102,255,0.06), 0 4px 16px rgba(13,27,62,0.04);
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0;
+    box-shadow: var(--shadow-blue);
+  }
+  .logo-text { color: var(--text); }
+  .logo-text span { color: var(--blue); }
+
+  .nav {
+    display: flex; gap: 2px;
+    background: var(--bg-surface);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+  }
+  .nav-btn {
+    padding: 0 16px;
+    height: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    outline: none;
+    letter-spacing: 0.01em;
+  }
+  .nav-btn:hover { color: var(--text); background: rgba(0,102,255,0.06); }
+  .nav-btn.active {
+    background: var(--blue);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: var(--shadow-blue);
+  }
+
+  /* ─── MAIN ─── */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 28px 100px;
+    position: relative; z-index: 1;
+  }
+
+  /* ─── PAGE HEADER ─── */
+  .page-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+  }
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .page-title .accent { color: var(--blue); }
+  .page-sub {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .nav-arrows { display: flex; gap: 6px; }
+  .arrow-btn {
+    width: 32px; height: 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.15s;
+  }
+  .arrow-btn:hover { color: var(--blue); border-color: var(--blue); box-shadow: var(--shadow-blue); }
+
+  /* ─── STAT CARDS ─── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+  }
+  .stat-card.blue::before  { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+  .stat-card.green::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+  .stat-card.cyan::before  { background: var(--cyan); }
+  .stat-label { font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-value { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -0.03em; }
+  .stat-card.blue  .stat-value { color: var(--blue); }
+  .stat-card.green .stat-value { color: var(--green); }
+  .stat-card.cyan  .stat-value { color: var(--cyan); }
+
+  /* ─── PROGRESS ─── */
+  .progress-row {
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .progress-label { font-size: 12px; font-weight: 600; color: var(--text-mid); white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: var(--blue-light); border-radius: 99px; overflow: hidden; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    border-radius: 99px;
+    width: 33%;
+    box-shadow: 0 0 6px var(--cyan-glow);
+    animation: grow 1s ease-out;
+  }
+  @keyframes grow { from { width: 0; } to { width: 33%; } }
+  .progress-pct { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--blue); white-space: nowrap; }
+
+  /* ─── MONTH TABS ─── */
+  .month-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .month-tab {
+    padding: 5px 13px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    font-size: 12px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .month-tab:hover { color: var(--blue); border-color: var(--blue); }
+  .month-tab.active {
+    background: var(--blue-light);
+    border-color: var(--blue);
+    color: var(--blue);
+    font-weight: 600;
+  }
+  .month-bar {
+    width: 24px; height: 3px;
+    background: var(--text-faint);
+    border-radius: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    overflow: hidden;
+    position: relative;
+  }
+  .month-bar-fill {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: var(--blue);
+    border-radius: 2px;
+  }
+  .month-tab.active .month-bar-fill { background: var(--blue); }
+
+  /* ─── DATE GROUP ─── */
+  .date-label {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 20px 0 10px;
+  }
+  .date-label::after { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
+  .date-badge {
+    background: var(--blue);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── CARD ─── */
+  .card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.18s;
+    backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--blue), var(--cyan));
+    border-radius: 12px 0 0 12px;
+  }
+  .card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--glass-border-strong);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .card.done { opacity: 0.5; }
+  .card.done::after { background: var(--text-faint); }
+
+  .cb {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--text-faint);
+    border-radius: 5px;
+    background: transparent;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.12s;
+  }
+  .cb:hover { border-color: var(--blue); background: var(--blue-light); }
+  .cb.checked {
+    background: var(--blue);
+    border-color: var(--blue);
+    box-shadow: 0 0 8px var(--blue-glow);
+  }
+  .cb.checked::after {
+    content: '';
+    position: absolute;
+    left: 5px; top: 1px;
+    width: 5px; height: 10px;
+    border: 2.5px solid #fff;
+    border-top: none; border-left: none;
+    transform: rotate(40deg);
+  }
+
+  .card-body { flex: 1; min-width: 0; padding-left: 4px; }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .card.done .card-title { text-decoration: line-through; color: var(--done); font-weight: 400; }
+  .card-meta { font-size: 12px; color: var(--text-muted); margin-top: 3px; display: flex; align-items: center; gap: 6px; }
+  .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--cyan); }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag {
+    font-size: 11px; font-weight: 500;
+    padding: 2px 9px;
+    border-radius: var(--radius-tag);
+    background: var(--blue-light);
+    color: var(--blue);
+    border: 1px solid rgba(0,102,255,0.15);
+  }
+  .tag.cyan { background: var(--cyan-light); color: #007A99; border-color: rgba(0,187,221,0.2); }
+  .tag.green { background: rgba(0,200,117,0.1); color: #007A45; border-color: rgba(0,200,117,0.2); }
+
+  .card-actions { opacity: 0; transition: opacity 0.15s; display: flex; gap: 6px; flex-shrink: 0; }
+  .card:hover .card-actions { opacity: 1; }
+  .action-btn {
+    width: 30px; height: 30px;
+    background: var(--bg-surface);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .action-btn:hover { color: var(--blue); border-color: var(--blue); background: var(--blue-light); }
+  .action-btn.danger:hover { color: #E53E3E; border-color: #E53E3E; background: rgba(229,62,62,0.07); }
+
+  /* ─── FAB ─── */
+  .fab {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 24px; font-weight: 300;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-blue), 0 8px 32px rgba(0,187,221,0.2);
+    transition: all 0.18s;
+    z-index: 50;
+  }
+  .fab:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 8px 32px rgba(0,102,255,0.32), 0 12px 40px rgba(0,187,221,0.2);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">日</div>
+    <span class="logo-text">日程<span>管理</span></span>
+  </div>
+  <nav class="nav">
+    <button class="nav-btn">年览</button>
+    <button class="nav-btn active">月历</button>
+    <button class="nav-btn">日程</button>
+  </nav>
+</header>
+
+<main>
+  <div class="page-row">
+    <div>
+      <div class="page-title">2025 年 <span class="accent">六月</span></div>
+      <div class="page-sub">9 项计划 · 3 已完成 · 6 待办</div>
+    </div>
+    <div class="nav-arrows">
+      <button class="arrow-btn">‹</button>
+      <button class="arrow-btn">›</button>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card blue">
+      <div class="stat-label">全部计划</div>
+      <div class="stat-value">9</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">已完成</div>
+      <div class="stat-value">3</div>
+    </div>
+    <div class="stat-card cyan">
+      <div class="stat-label">待完成</div>
+      <div class="stat-value">6</div>
+    </div>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-label">本月进度</div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="progress-pct">33%</div>
+  </div>
+
+  <div class="month-row">
+    <div class="month-tab">一月 <span class="month-bar"><span class="month-bar-fill" style="width:75%"></span></span></div>
+    <div class="month-tab">二月 <span class="month-bar"><span class="month-bar-fill" style="width:60%"></span></span></div>
+    <div class="month-tab">三月 <span class="month-bar"><span class="month-bar-fill" style="width:100%"></span></span></div>
+    <div class="month-tab">四月 <span class="month-bar"><span class="month-bar-fill" style="width:50%"></span></span></div>
+    <div class="month-tab">五月 <span class="month-bar"><span class="month-bar-fill" style="width:0%"></span></span></div>
+    <div class="month-tab active">六月 <span class="month-bar"><span class="month-bar-fill" style="width:33%"></span></span></div>
+  </div>
+
+  <div class="date-label"><span class="date-badge">TODAY</span> 2025 / 06 / 30 &nbsp; 周一</div>
+
+  <div class="card">
+    <div class="cb"></div>
+    <div class="card-body">
+      <div class="card-title">完成 Q2 产品路线图评审</div>
+      <div class="card-meta"><span class="meta-dot"></span>10:00 — 11:30</div>
+      <div class="card-tags"><span class="tag">工作</span><span class="tag cyan">会议</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cb"></div>
+    <div class="card-body">
+      <div class="card-title">准备周五的技术分享材料</div>
+      <div class="card-meta"><span class="meta-dot"></span>全天</div>
+      <div class="card-tags"><span class="tag green">学习</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="cb checked"></div>
+    <div class="card-body">
+      <div class="card-title">更新依赖包版本</div>
+      <div class="card-meta">09:00 — 09:30</div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+
+  <div class="date-label">2025 / 06 / 28 &nbsp; 周六</div>
+
+  <div class="card done">
+    <div class="cb checked"></div>
+    <div class="card-body">
+      <div class="card-title">阅读《SICP》第三章</div>
+      <div class="card-meta">14:00 — 16:00</div>
+      <div class="card-tags"><span class="tag green">学习</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+</main>
+
+<button class="fab" aria-label="新建计划">+</button>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向 B — 清水混凝土</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #E8E4DF;
+    --bg-card:   #EDEAE6;
+    --bg-white:  #F2EFE9;
+    --line:      #CCC8C3;
+    --line-thin: rgba(0,0,0,0.1);
+    --text:      #2A2825;
+    --text-muted:#7A766F;
+    --text-faint:#ADAG9;
+    --accent:    #E8890C;
+    --accent-bg: rgba(232,137,12,0.08);
+    --done:      #ADA9A3;
+    --shadow:    rgba(42,40,37,0.06);
+    --font: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--line);
+    padding: 0 40px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 18px;
+    font-weight: 100;
+    color: var(--text);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+
+  .nav {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--line);
+  }
+  .nav-btn {
+    padding: 0 22px;
+    height: 34px;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--line);
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+    outline: none;
+  }
+  .nav-btn:last-child { border-right: none; }
+  .nav-btn:hover { color: var(--text); background: var(--bg); }
+  .nav-btn.active {
+    color: var(--accent);
+    background: var(--accent-bg);
+    font-weight: 500;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 32px;
+    position: relative;
+  }
+
+  /* BIG watermark number */
+  .watermark {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-size: 160px;
+    font-weight: 100;
+    color: rgba(42,40,37,0.04);
+    line-height: 1;
+    letter-spacing: -0.05em;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .page-header {
+    margin-bottom: 36px;
+  }
+  .page-title {
+    font-size: 32px;
+    font-weight: 100;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+  .page-title strong {
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .page-sub {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--line);
+    margin: 24px 0;
+    position: relative;
+  }
+  .divider-label {
+    position: absolute;
+    top: -9px;
+    left: 0;
+    background: var(--bg);
+    padding: 0 10px 0 0;
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* CARDS */
+  .card-list { display: flex; flex-direction: column; gap: 0; }
+
+  .card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line-thin);
+    background: transparent;
+    position: relative;
+    transition: background 0.15s;
+  }
+  .card:hover { background: var(--accent-bg); padding-left: 8px; }
+  .card.done { opacity: 0.45; }
+
+  .cb {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s;
+    border-radius: 0;
+  }
+  .cb:hover { border-color: var(--accent); }
+  .cb.checked {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .cb.checked::after {
+    content: '';
+    position: absolute;
+    left: 5px; top: 1px;
+    width: 5px; height: 10px;
+    border: 2px solid #fff;
+    border-top: none; border-left: none;
+    transform: rotate(40deg);
+  }
+
+  .card-body { flex: 1; }
+  .card-title {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+  }
+  .card.done .card-title {
+    text-decoration: line-through;
+    color: var(--done);
+    font-weight: 300;
+  }
+  .card-meta {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text-muted);
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+  }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag {
+    font-size: 11px;
+    font-weight: 300;
+    padding: 1px 10px;
+    border: 1px solid var(--line);
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    background: transparent;
+  }
+  .tag.accent {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .card-actions {
+    opacity: 0;
+    transition: opacity 0.15s;
+    display: flex; gap: 6px;
+    flex-shrink: 0;
+  }
+  .card:hover .card-actions { opacity: 1; }
+  .action-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 300;
+    border: 1px solid var(--line);
+    background: var(--bg-white);
+    color: var(--text-muted);
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition: color 0.1s, border-color 0.1s;
+  }
+  .action-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .action-btn.danger:hover { color: #C44; border-color: #C44; }
+
+  /* YEAR GRID */
+  .year-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .month-cell {
+    padding: 10px 0;
+    border-top: 2px solid var(--line);
+    transition: border-color 0.1s;
+  }
+  .month-cell:hover { border-color: var(--accent); }
+  .month-cell.active { border-color: var(--accent); }
+  .month-num {
+    font-size: 26px;
+    font-weight: 100;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .month-cell.active .month-num { color: var(--accent); }
+  .month-label {
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .month-bar {
+    height: 2px;
+    background: var(--line);
+    margin-top: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .month-bar-fill {
+    position: absolute;
+    top: 0; left: 0; height: 100%;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 36px;
+    right: 36px;
+    width: 52px; height: 52px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-size: 24px;
+    font-weight: 100;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(232,137,12,0.3);
+    transition: box-shadow 0.2s, transform 0.15s;
+    border-radius: 0;
+  }
+  .fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(232,137,12,0.4);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">日程</div>
+  <nav class="nav">
+    <button class="nav-btn">年览</button>
+    <button class="nav-btn active">月历</button>
+    <button class="nav-btn">日程</button>
+  </nav>
+</header>
+
+<main>
+  <div class="watermark">06</div>
+
+  <div class="page-header">
+    <div class="page-title">二〇二五年 <strong>六月</strong></div>
+    <div class="page-sub">June · 共 9 项计划 · 完成 3 项</div>
+  </div>
+
+  <!-- year overview mini -->
+  <div class="year-grid">
+    <div class="month-cell"><div class="month-num">1</div><div class="month-label">Jan</div><div class="month-bar"><div class="month-bar-fill" style="width:75%"></div></div></div>
+    <div class="month-cell"><div class="month-num">2</div><div class="month-label">Feb</div><div class="month-bar"><div class="month-bar-fill" style="width:60%"></div></div></div>
+    <div class="month-cell"><div class="month-num">3</div><div class="month-label">Mar</div><div class="month-bar"><div class="month-bar-fill" style="width:100%"></div></div></div>
+    <div class="month-cell"><div class="month-num">4</div><div class="month-label">Apr</div><div class="month-bar"><div class="month-bar-fill" style="width:50%"></div></div></div>
+    <div class="month-cell"><div class="month-num">5</div><div class="month-label">May</div><div class="month-bar"><div class="month-bar-fill" style="width:0%"></div></div></div>
+    <div class="month-cell active"><div class="month-num">6</div><div class="month-label">Jun</div><div class="month-bar"><div class="month-bar-fill" style="width:33%"></div></div></div>
+  </div>
+
+  <div class="divider"><span class="divider-label">本月计划</span></div>
+
+  <div class="card-list">
+    <div class="card">
+      <div class="cb"></div>
+      <div class="card-body">
+        <div class="card-title">完成 Q2 产品路线图评审</div>
+        <div class="card-meta">2025-06-30 &nbsp;·&nbsp; 10:00 — 11:30</div>
+        <div class="card-tags"><span class="tag accent">工作</span><span class="tag">会议</span></div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">编辑</button>
+        <button class="action-btn danger">删除</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="cb"></div>
+      <div class="card-body">
+        <div class="card-title">准备周五的技术分享材料</div>
+        <div class="card-meta">2025-06-30 &nbsp;·&nbsp; 全天</div>
+        <div class="card-tags"><span class="tag">学习</span></div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">编辑</button>
+        <button class="action-btn danger">删除</button>
+      </div>
+    </div>
+    <div class="card done">
+      <div class="cb checked"></div>
+      <div class="card-body">
+        <div class="card-title">更新依赖包版本</div>
+        <div class="card-meta">2025-06-30 &nbsp;·&nbsp; 09:00 — 09:30</div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">编辑</button>
+        <button class="action-btn danger">删除</button>
+      </div>
+    </div>
+    <div class="card done">
+      <div class="cb checked"></div>
+      <div class="card-body">
+        <div class="card-title">阅读《SICP》第三章</div>
+        <div class="card-meta">2025-06-28 &nbsp;·&nbsp; 14:00 — 16:00</div>
+        <div class="card-tags"><span class="tag">学习</span></div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">编辑</button>
+        <button class="action-btn danger">删除</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<button class="fab" aria-label="新建计划">+</button>
+
+</body>
+</html>

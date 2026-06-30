@@ -27,10 +27,10 @@ function RingProgress({ pct, size = 44 }: RingProps) {
       style={{ transform: 'rotate(-90deg)' }}
       aria-hidden="true"
     >
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#D4CFC9" strokeWidth="2.5" />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--text-faint)" strokeWidth="2.5" />
       <circle
         cx={size / 2} cy={size / 2} r={r} fill="none"
-        stroke={pct === 100 ? '#5C7A6B' : '#C84B31'}
+        stroke={pct === 100 ? 'var(--mint)' : 'var(--purple)'}
         strokeWidth="2.5"
         strokeDasharray={`${dash} ${circ}`}
         strokeLinecap="round"

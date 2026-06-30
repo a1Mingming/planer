@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向 F2 — 浅色梦幻</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #F5F0FF;
+    --bg-surface:  #FAF7FF;
+    --bg-card:     rgba(255,255,255,0.85);
+    --bg-card-hover: rgba(255,255,255,0.98);
+    --glass-border: rgba(160,100,255,0.14);
+    --glass-border-strong: rgba(160,100,255,0.32);
+    --text:        #2A1860;
+    --text-mid:    #4A2FA0;
+    --text-muted:  #8B72C8;
+    --text-faint:  #C4B0EC;
+    --purple:      #8B5CF6;
+    --purple-light:#F0E8FF;
+    --purple-glow: rgba(139,92,246,0.22);
+    --pink:        #F472B6;
+    --pink-light:  #FFF0F8;
+    --pink-glow:   rgba(244,114,182,0.22);
+    --mint:        #34D399;
+    --mint-light:  #ECFDF5;
+    --yellow:      #FBBF24;
+    --done:        #D4C8F0;
+    --shadow-sm:   0 2px 10px rgba(42,24,96,0.07), 0 0 0 1px rgba(139,92,246,0.07);
+    --shadow-md:   0 6px 24px rgba(42,24,96,0.12), 0 0 0 1px rgba(139,92,246,0.12);
+    --font:        'Nunito', 'Noto Sans SC', sans-serif;
+    --radius:      16px;
+    --radius-sm:   10px;
+    --radius-tag:  8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ─── SOFT STAR FIELD ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(2px 2px at 12% 15%, rgba(139,92,246,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 35% 8%, rgba(244,114,182,0.6) 0%, transparent 100%),
+      radial-gradient(2px 2px at 68% 22%, rgba(139,92,246,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 82% 12%, rgba(244,114,182,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 90% 45%, rgba(52,211,153,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 72%, rgba(139,92,246,0.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 55% 85%, rgba(251,191,36,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 78%, rgba(244,114,182,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 5%  50%, rgba(52,211,153,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 48% 35%, rgba(139,92,246,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── NEBULA BLOBS (light) ─── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 90% 5%,  rgba(244,114,182,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 50% at 5%  80%, rgba(139,92,246,0.1) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 35% at 50% 50%, rgba(52,211,153,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse 35% 40% at 25% 20%, rgba(251,191,36,0.08) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: rgba(250,247,255,0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 0 32px;
+    height: 62px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 1px 0 rgba(139,92,246,0.07);
+  }
+
+  .logo {
+    font-family: var(--font);
+    font-size: 18px; font-weight: 800;
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-star {
+    display: inline-block;
+    font-size: 20px;
+    -webkit-text-fill-color: transparent;
+    background: linear-gradient(135deg, var(--yellow), var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: twinkle 2.5s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.6; transform: scale(0.88) rotate(-10deg); }
+    to   { opacity: 1;   transform: scale(1.12) rotate(10deg); }
+  }
+
+  .nav {
+    display: flex; gap: 4px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--glass-border);
+    border-radius: 99px;
+    padding: 4px;
+    backdrop-filter: blur(8px);
+  }
+  .nav-btn {
+    padding: 0 18px; height: 32px;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted); background: transparent;
+    border: none; border-radius: 99px;
+    cursor: pointer; transition: all 0.18s; outline: none;
+  }
+  .nav-btn:hover { color: var(--text); background: rgba(139,92,246,0.08); }
+  .nav-btn.active {
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: #fff; font-weight: 700;
+    box-shadow: 0 3px 12px var(--purple-glow);
+  }
+
+  /* ─── MAIN ─── */
+  main {
+    max-width: 720px; margin: 0 auto;
+    padding: 32px 24px 100px;
+    position: relative; z-index: 1;
+  }
+
+  .page-header { margin-bottom: 24px; }
+  .page-title {
+    font-size: 32px; font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1.1;
+  }
+  .page-title .grad {
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .page-sub { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-top: 6px; }
+
+  /* ─── STAT ROW ─── */
+  .stat-row { display: flex; gap: 12px; margin-bottom: 20px; }
+  .stat-card {
+    flex: 1;
+    background: var(--bg-card); border: 1px solid var(--glass-border);
+    border-radius: var(--radius); padding: 14px 16px;
+    box-shadow: var(--shadow-sm); backdrop-filter: blur(10px);
+    transition: all 0.18s; cursor: default;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .stat-emoji { font-size: 20px; margin-bottom: 6px; display: block; }
+  .stat-label { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; }
+  .stat-value { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; margin-top: 2px; }
+  .stat-card.all   .stat-value { color: var(--purple); }
+  .stat-card.done  .stat-value { color: var(--mint); }
+  .stat-card.todo  .stat-value { color: var(--pink); }
+
+  /* ─── PROGRESS ─── */
+  .progress-card {
+    background: var(--bg-card); border: 1px solid var(--glass-border);
+    border-radius: var(--radius); padding: 16px 20px;
+    margin-bottom: 20px; box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; gap: 14px; backdrop-filter: blur(10px);
+  }
+  .progress-label { font-size: 13px; font-weight: 700; color: var(--text-mid); white-space: nowrap; }
+  .progress-track { flex: 1; height: 8px; background: var(--purple-light); border-radius: 99px; overflow: hidden; }
+  .progress-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    box-shadow: 0 0 8px var(--pink-glow);
+    width: 33%; animation: grow 1s ease-out;
+  }
+  @keyframes grow { from { width: 0; } to { width: 33%; } }
+  .progress-pct { font-size: 14px; font-weight: 800; color: var(--purple); white-space: nowrap; }
+
+  /* ─── MONTH PILLS ─── */
+  .month-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .month-pill {
+    padding: 5px 13px; border-radius: 99px;
+    background: var(--bg-card); border: 1px solid var(--glass-border);
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    cursor: pointer; transition: all 0.18s; backdrop-filter: blur(6px);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .month-pill:hover { color: var(--purple); border-color: rgba(139,92,246,0.3); }
+  .month-pill.active {
+    background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(244,114,182,0.15));
+    border-color: rgba(139,92,246,0.35); color: var(--purple); font-weight: 700;
+  }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); }
+  .month-pill.active .pill-dot { background: var(--pink); box-shadow: 0 0 5px var(--pink-glow); }
+  .pill-pct { font-size: 10px; color: var(--text-faint); }
+  .month-pill.active .pill-pct { color: var(--purple); }
+
+  /* ─── DATE LABEL ─── */
+  .date-label {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 700; color: var(--text-muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin: 20px 0 10px;
+  }
+  .date-label::after { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
+  .today-badge {
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: #fff; font-size: 10px; font-weight: 800;
+    padding: 2px 9px; border-radius: 6px; letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px var(--purple-glow);
+  }
+
+  /* ─── CARD ─── */
+  .card {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 15px 18px;
+    background: var(--bg-card); border: 1px solid var(--glass-border);
+    border-radius: var(--radius); margin-bottom: 10px;
+    box-shadow: var(--shadow-sm); cursor: pointer;
+    transition: all 0.2s; backdrop-filter: blur(12px);
+    position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.7) 50%, transparent 90%);
+  }
+  .card-strip {
+    position: absolute; left: 0; top: 20%; bottom: 20%;
+    width: 3.5px; border-radius: 0 4px 4px 0;
+    background: linear-gradient(to bottom, var(--purple), var(--pink));
+  }
+  .card.mint-strip .card-strip { background: linear-gradient(to bottom, var(--mint), #34D3D3); }
+  .card.done .card-strip { background: var(--done); }
+  .card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--glass-border-strong);
+    box-shadow: var(--shadow-md); transform: translateY(-2px);
+  }
+  .card.done { opacity: 0.45; }
+
+  .cb {
+    width: 20px; height: 20px;
+    border: 2px solid var(--text-faint); border-radius: 50%;
+    background: transparent; flex-shrink: 0; margin-top: 0;
+    cursor: pointer; position: relative; transition: all 0.15s;
+  }
+  .cb:hover { border-color: var(--purple); box-shadow: 0 0 8px var(--purple-glow); }
+  .cb.checked {
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    border: none; box-shadow: 0 0 12px var(--pink-glow);
+  }
+  .cb.checked::after {
+    content: '✓'; position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 800;
+  }
+
+  .card-body { flex: 1; min-width: 0; padding-left: 6px; }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.4; }
+  .card.done .card-title { text-decoration: line-through; color: var(--done); font-weight: 500; }
+  .card-meta { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-top: 3px; }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 99px;
+    background: rgba(139,92,246,0.12); color: var(--purple);
+    border: 1px solid rgba(139,92,246,0.2);
+  }
+  .tag.pink { background: rgba(244,114,182,0.12); color: #C2186A; border-color: rgba(244,114,182,0.2); }
+  .tag.mint { background: rgba(52,211,153,0.12); color: #059669; border-color: rgba(52,211,153,0.2); }
+
+  .card-actions { opacity: 0; transition: opacity 0.15s; display: flex; gap: 6px; flex-shrink: 0; }
+  .card:hover .card-actions { opacity: 1; }
+  .action-btn {
+    width: 30px; height: 30px;
+    background: rgba(255,255,255,0.7); border: 1px solid var(--glass-border);
+    border-radius: 9px; color: var(--text-muted); font-size: 13px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .action-btn:hover { color: var(--purple); border-color: var(--purple); background: var(--purple-light); }
+  .action-btn.danger:hover { color: #E53E3E; border-color: #E53E3E; background: rgba(229,62,62,0.07); }
+
+  /* ─── FAB ─── */
+  .fab {
+    position: fixed; bottom: 32px; right: 32px;
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: #fff; border: none; border-radius: 50%;
+    font-size: 26px; font-weight: 300;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px var(--purple-glow), 0 8px 40px var(--pink-glow);
+    transition: all 0.2s; z-index: 50;
+    animation: float 4s ease-in-out infinite;
+  }
+  .fab:hover { transform: scale(1.1) rotate(45deg); animation: none; box-shadow: 0 8px 32px var(--purple-glow), 0 12px 48px var(--pink-glow); }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-5px); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="logo-star">✦</span>日程</div>
+  <nav class="nav">
+    <button class="nav-btn">年览</button>
+    <button class="nav-btn active">月历</button>
+    <button class="nav-btn">日程</button>
+  </nav>
+</header>
+
+<main>
+  <div class="page-header">
+    <div class="page-title"><span class="grad">六月 · 2025</span></div>
+    <div class="page-sub">你有 6 项计划待完成 ✨</div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card all">
+      <span class="stat-emoji">📋</span>
+      <div class="stat-label">全部</div>
+      <div class="stat-value">9</div>
+    </div>
+    <div class="stat-card done">
+      <span class="stat-emoji">✅</span>
+      <div class="stat-label">完成</div>
+      <div class="stat-value">3</div>
+    </div>
+    <div class="stat-card todo">
+      <span class="stat-emoji">⏳</span>
+      <div class="stat-label">待办</div>
+      <div class="stat-value">6</div>
+    </div>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-label">本月进度</div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="progress-pct">33%</div>
+  </div>
+
+  <div class="month-row">
+    <div class="month-pill"><span class="pill-dot"></span>一月<span class="pill-pct">75%</span></div>
+    <div class="month-pill"><span class="pill-dot"></span>二月<span class="pill-pct">60%</span></div>
+    <div class="month-pill"><span class="pill-dot"></span>三月<span class="pill-pct">100%</span></div>
+    <div class="month-pill"><span class="pill-dot"></span>四月<span class="pill-pct">50%</span></div>
+    <div class="month-pill"><span class="pill-dot"></span>五月<span class="pill-pct">0%</span></div>
+    <div class="month-pill active"><span class="pill-dot"></span>六月<span class="pill-pct">33%</span></div>
+  </div>
+
+  <div class="date-label"><span class="today-badge">TODAY</span> 6月30日 · 周一</div>
+
+  <div class="card">
+    <div class="card-strip"></div>
+    <div class="cb"></div>
+    <div class="card-body">
+      <div class="card-title">完成 Q2 产品路线图评审</div>
+      <div class="card-meta">🕙 10:00 — 11:30</div>
+      <div class="card-tags"><span class="tag">工作</span><span class="tag pink">会议</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+
+  <div class="card mint-strip">
+    <div class="card-strip"></div>
+    <div class="cb"></div>
+    <div class="card-body">
+      <div class="card-title">准备周五的技术分享材料</div>
+      <div class="card-meta">🗓 全天</div>
+      <div class="card-tags"><span class="tag mint">学习</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="card-strip"></div>
+    <div class="cb checked"></div>
+    <div class="card-body">
+      <div class="card-title">更新依赖包版本</div>
+      <div class="card-meta">🕘 09:00 — 09:30</div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+
+  <div class="date-label">6月28日 · 周六</div>
+  <div class="card done mint-strip">
+    <div class="card-strip"></div>
+    <div class="cb checked"></div>
+    <div class="card-body">
+      <div class="card-title">阅读《SICP》第三章</div>
+      <div class="card-meta">🕑 14:00 — 16:00</div>
+      <div class="card-tags"><span class="tag mint">学习</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="action-btn">✎</button>
+      <button class="action-btn danger">✕</button>
+    </div>
+  </div>
+</main>
+
+<button class="fab" aria-label="新建计划">+</button>
+
+</body>
+</html>

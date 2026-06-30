@@ -6,5 +6,7 @@
 /src/.umi-production
 /src/.umi-test
 /dist
+/test-results
+/e2e/test-output
 .swc
 .turbopack

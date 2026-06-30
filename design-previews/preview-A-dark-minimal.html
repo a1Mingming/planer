@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向 A — 暗夜极简</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #121212;
+    --bg-card:   #1A1A1A;
+    --bg-hover:  #1F1F1F;
+    --line:      #2A2A2A;
+    --text:      #E8E8E8;
+    --text-muted:#888;
+    --text-faint:#444;
+    --accent:    #A8FF60;
+    --accent-dim:rgba(168,255,96,0.12);
+    --done:      #555;
+    --tag-bg:    #222;
+    --tag-text:  #A8FF60;
+    --danger:    #FF6B6B;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+    --font-body: 'Noto Sans SC', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .logo span { color: var(--text-muted); margin-right: 8px; }
+
+  .nav {
+    display: flex;
+    gap: 0;
+  }
+  .nav-btn {
+    padding: 0 18px;
+    height: 32px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-right: none;
+    cursor: pointer;
+    transition: color 0.1s, background 0.1s;
+    outline: none;
+  }
+  .nav-btn:first-child { border-radius: 2px 0 0 2px; }
+  .nav-btn:last-child  { border-right: 1px solid var(--line); border-radius: 0 2px 2px 0; }
+  .nav-btn:hover { color: var(--text); background: var(--bg-hover); }
+  .nav-btn.active { color: var(--accent); background: var(--accent-dim); border-color: var(--accent); }
+  .nav-btn.active + .nav-btn { border-left-color: var(--accent); }
+
+  /* MAIN */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  .page-title {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .page-subtitle {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 28px;
+  }
+
+  /* DATE GROUP */
+  .date-group { margin-bottom: 24px; }
+  .date-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 0;
+  }
+
+  /* PLAN CARD */
+  .card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0 14px 16px;
+    border-left: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    transition: border-left-color 0.15s, background 0.15s;
+    position: relative;
+    cursor: pointer;
+  }
+  .card:hover {
+    border-left-color: var(--accent);
+    background: var(--bg-hover);
+  }
+  .card.done {
+    opacity: 0.4;
+  }
+  .card.done:hover { opacity: 0.6; }
+
+  /* checkbox */
+  .cb {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--text-faint);
+    background: transparent;
+    flex-shrink: 0;
+    margin-top: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.1s;
+  }
+  .cb:hover { border-color: var(--accent); }
+  .cb.checked {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .cb.checked::after {
+    content: '';
+    position: absolute;
+    left: 4px; top: 1px;
+    width: 5px; height: 9px;
+    border: 2px solid #000;
+    border-top: none; border-left: none;
+    transform: rotate(40deg);
+  }
+
+  .card-body { flex: 1; min-width: 0; }
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .card.done .card-title {
+    text-decoration: line-through;
+    color: var(--done);
+  }
+  .card-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    border: 1px solid var(--accent);
+  }
+  .tag.neutral {
+    color: var(--text-muted);
+    border-color: var(--line);
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+  .card:hover .card-actions { opacity: 1; }
+  .action-btn {
+    width: 28px; height: 28px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: color 0.1s, border-color 0.1s;
+  }
+  .action-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .action-btn.danger:hover { color: var(--danger); border-color: var(--danger); }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 52px; height: 52px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-size: 22px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .fab:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(168,255,96,0.4);
+  }
+
+  /* LABEL TAG */
+  .badge {
+    display: inline-block;
+    padding: 1px 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(168,255,96,0.3);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* DIVIDER-LABEL */
+  .section-break {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 32px 0 20px;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+  }
+  .section-break::before, .section-break::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* YEAR RING (simple) */
+  .ring-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .ring-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .ring-item svg { display: block; }
+  .ring-month {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+  .ring-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  /* CURSOR */
+  body { cursor: default; }
+  .card, .nav-btn, .fab, .action-btn, .cb { cursor: pointer; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span>//</span>日程</div>
+  <nav class="nav">
+    <button class="nav-btn">年览</button>
+    <button class="nav-btn active">月历</button>
+    <button class="nav-btn">日程</button>
+  </nav>
+</header>
+
+<main>
+  <div class="page-title">2025 / 06 <span class="badge">当前</span></div>
+  <div class="page-subtitle">JUNE · 30 DAYS · 12 TASKS REMAIN</div>
+
+  <!-- Year rings preview -->
+  <div class="ring-grid">
+    <div class="ring-item">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#2A2A2A" stroke-width="4"/>
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#A8FF60" stroke-width="4"
+          stroke-dasharray="107" stroke-dashoffset="85" stroke-linecap="butt" transform="rotate(-90 22 22)"/>
+        <text x="22" y="26" text-anchor="middle" fill="#888" font-size="9" font-family="JetBrains Mono">75%</text>
+      </svg>
+      <div class="ring-month">JAN</div><div class="ring-count">6/8</div>
+    </div>
+    <div class="ring-item">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#2A2A2A" stroke-width="4"/>
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#A8FF60" stroke-width="4"
+          stroke-dasharray="107" stroke-dashoffset="43" stroke-linecap="butt" transform="rotate(-90 22 22)"/>
+        <text x="22" y="26" text-anchor="middle" fill="#888" font-size="9" font-family="JetBrains Mono">60%</text>
+      </svg>
+      <div class="ring-month">FEB</div><div class="ring-count">3/5</div>
+    </div>
+    <div class="ring-item">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#2A2A2A" stroke-width="4"/>
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#A8FF60" stroke-width="4"
+          stroke-dasharray="107" stroke-dashoffset="0" stroke-linecap="butt" transform="rotate(-90 22 22)"/>
+        <text x="22" y="26" text-anchor="middle" fill="#A8FF60" font-size="9" font-family="JetBrains Mono">100%</text>
+      </svg>
+      <div class="ring-month">MAR</div><div class="ring-count">7/7</div>
+    </div>
+    <div class="ring-item">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#2A2A2A" stroke-width="4"/>
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#A8FF60" stroke-width="4"
+          stroke-dasharray="107" stroke-dashoffset="54" stroke-linecap="butt" transform="rotate(-90 22 22)"/>
+        <text x="22" y="26" text-anchor="middle" fill="#888" font-size="9" font-family="JetBrains Mono">49%</text>
+      </svg>
+      <div class="ring-month">APR</div><div class="ring-count">5/10</div>
+    </div>
+    <div class="ring-item">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#2A2A2A" stroke-width="4"/>
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#2A2A2A" stroke-width="4"/>
+        <text x="22" y="26" text-anchor="middle" fill="#444" font-size="9" font-family="JetBrains Mono">0%</text>
+      </svg>
+      <div class="ring-month">MAY</div><div class="ring-count">0/3</div>
+    </div>
+    <div class="ring-item">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#2A2A2A" stroke-width="4"/>
+        <circle cx="22" cy="22" r="17" fill="none" stroke="#A8FF60" stroke-width="4"
+          stroke-dasharray="107" stroke-dashoffset="69" stroke-linecap="butt" transform="rotate(-90 22 22)"/>
+        <text x="22" y="26" text-anchor="middle" fill="#888" font-size="9" font-family="JetBrains Mono">35%</text>
+      </svg>
+      <div class="ring-month">JUN</div><div class="ring-count">3/9</div>
+    </div>
+  </div>
+
+  <!-- Plan list -->
+  <div class="date-group">
+    <div class="date-label">2025-06-30 · MON</div>
+    <div class="card">
+      <div class="cb"></div>
+      <div class="card-body">
+        <div class="card-title">完成 Q2 产品路线图评审</div>
+        <div class="card-meta">10:00 → 11:30</div>
+        <div class="card-tags">
+          <span class="tag">工作</span>
+          <span class="tag neutral">会议</span>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">✎</button>
+        <button class="action-btn danger">✕</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="cb"></div>
+      <div class="card-body">
+        <div class="card-title">准备周五的技术分享材料</div>
+        <div class="card-meta">全天</div>
+        <div class="card-tags">
+          <span class="tag neutral">学习</span>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">✎</button>
+        <button class="action-btn danger">✕</button>
+      </div>
+    </div>
+    <div class="card done">
+      <div class="cb checked"></div>
+      <div class="card-body">
+        <div class="card-title">更新依赖包版本</div>
+        <div class="card-meta">09:00 → 09:30</div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">✎</button>
+        <button class="action-btn danger">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-break">EARLIER THIS MONTH</div>
+
+  <div class="date-group">
+    <div class="date-label">2025-06-28 · SAT</div>
+    <div class="card done">
+      <div class="cb checked"></div>
+      <div class="card-body">
+        <div class="card-title">阅读《SICP》第三章</div>
+        <div class="card-meta">14:00 → 16:00</div>
+        <div class="card-tags">
+          <span class="tag neutral">学习</span>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">✎</button>
+        <button class="action-btn danger">✕</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<button class="fab" aria-label="新建计划">+</button>
+
+</body>
+</html>

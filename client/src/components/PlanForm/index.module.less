@@ -1,49 +1,78 @@
-@import '@/styles/variables.less';
-
 .modal {
   :global(.ant-modal-content) {
-    background: @paper-white;
-    border: 1.5px solid @ink;
-    border-radius: @border-radius;
+    background: var(--bg-surface);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
     padding: 0;
-    box-shadow: 6px 6px 0 @ink;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   :global(.ant-modal-header) {
-    background: @ink;
-    padding: 14px 20px;
-    border-radius: 0;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    padding: 0;
+    border-radius: 6px;
     border-bottom: none;
     margin: 0;
   }
 
   :global(.ant-modal-title) {
-    color: @paper;
-    font-family: @font-display;
-    font-size: 15px;
-    letter-spacing: 0.06em;
-    font-weight: 600;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
   }
 
   :global(.ant-modal-close) {
-    color: @paper;
-    top: 14px;
-    right: 16px;
-
-    &:hover {
-      color: @ink-faint;
-      background: transparent;
-    }
+    display: none !important;
   }
 
   :global(.ant-modal-body) {
-    padding: 20px 20px 16px;
+    padding: 22px 22px 18px;
   }
 
   :global(.ant-form-item-label > label) {
     font-size: 12px;
-    color: @ink-muted;
+    font-weight: 600;
+    color: var(--text-muted);
     letter-spacing: 0.04em;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif;
+  }
+}
+
+.modalTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 14px 14px 22px;
+  font-family: 'Nunito', 'Noto Sans SC', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.closeBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+  outline: none;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
   }
 }
 
@@ -61,7 +90,7 @@
   display: flex;
   gap: 8px;
   padding: 8px;
-  border-top: 1px solid @ink-faint;
+  border-top: 1px solid var(--glass-border);
 }
 
 .footer {
@@ -69,6 +98,6 @@
   justify-content: flex-end;
   gap: 8px;
   padding-top: 14px;
-  border-top: 1px solid @ink-faint;
+  border-top: 1px solid var(--glass-border);
   margin-top: 4px;
 }
