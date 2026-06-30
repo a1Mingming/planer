@@ -61,10 +61,46 @@ docker compose up --build
 
 首次构建约需 3–5 分钟。完成后访问 `http://localhost`，Nginx 服务前端静态文件，`/api` 请求自动转发到后端容器。
 
+局域网内其他设备可通过本机 IP 访问，例如 `http://192.168.x.x`。
+
 ```bash
 docker compose down        # 停止（保留数据库）
 docker compose down -v     # 停止并删除数据库（完全重置）
+docker compose restart     # 重启容器（不重新构建）
 ```
+
+### 离线镜像包部署
+
+适用于目标机器无法访问 Docker Hub 的场景。
+
+**导出镜像（已构建的机器）：**
+```bash
+docker save test-backend:latest test-frontend:latest -o plan-app.tar
+```
+
+**目标机器导入并启动：**
+```bash
+# 导入镜像
+docker load -i plan-app.tar
+
+# 将 docker-compose.yml 拷贝到同目录，然后启动
+docker compose up -d
+```
+
+目标机器只需安装 Docker Desktop，无需联网。需要拷贝的文件：`plan-app.tar` + `docker-compose.yml`。
+
+### 国内网络构建说明
+
+如果拉取 Docker Hub 镜像超时，可先手动从镜像源拉取并打 tag：
+
+```bash
+docker pull docker.m.daocloud.io/library/node:20-alpine
+docker pull docker.m.daocloud.io/library/nginx:1.27-alpine
+docker tag docker.m.daocloud.io/library/node:20-alpine node:20-alpine
+docker tag docker.m.daocloud.io/library/nginx:1.27-alpine nginx:1.27-alpine
+```
+
+再执行 `docker compose up --build` 即可。
 
 ### 本地开发启动
 

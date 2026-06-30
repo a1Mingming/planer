@@ -1,6 +1,6 @@
 # 代码规范文档
 
-> 版本：v1.0 | 日期：2026-06-29
+> 版本：v1.1 | 日期：2026-06-30
 
 ---
 
@@ -18,6 +18,14 @@
 - **ESLint**：使用 Umi 内置 ESLint 配置（基于 `@umijs/lint`）
 - **Prettier**：通过 ESLint 集成，不单独配置
 - 提交前通过 lint 检查（`pnpm lint`）
+
+### 2.2 构建配置
+
+`.umirc.ts` 必须包含以下配置，避免 esbuild helper 在多 chunk 间冲突：
+
+```typescript
+esbuildMinifyIIFE: true,
+```
 
 ### 2.2 样式规范
 
@@ -228,7 +236,13 @@ export const fail = (code: string, message: string) => ({
 
 ---
 
-## 四、Git 规范
+## 六、Docker 规范
+
+- 基础镜像：`node:20-alpine`（前后端构建）、`nginx:1.27-alpine`（前端运行）
+- pnpm 版本固定为 `9.15.0`（兼容 Node 20，`pnpm@latest` 要求 Node 22+）
+- Docker 构建使用多阶段（multi-stage）方式，最终镜像不包含构建依赖
+- 数据库文件通过 named volume `sqlite_data` 持久化，`docker compose down` 不会删除数据
+- 停止并清除数据：`docker compose down -v`
 
 - commit message 格式：`type(scope): description`
   - type: `feat` / `fix` / `refactor` / `style` / `docs` / `chore`
