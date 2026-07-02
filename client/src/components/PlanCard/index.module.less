@@ -43,6 +43,15 @@
       opacity: 1;
     }
   }
+
+  // Priority accent strip overrides
+  &.priorityMedium::before {
+    background: linear-gradient(to bottom, #F97316, #FBBF24);
+  }
+
+  &.priorityHigh::before {
+    background: linear-gradient(to bottom, #EF4444, #F97316);
+  }
 }
 
 .done {
@@ -177,16 +186,19 @@
   border-radius: 100px;
   border: 1px solid;
   background: transparent;
-  line-height: 1.6;
   font-family: 'Nunito', 'Noto Sans SC', sans-serif;
   // border-color and color are set inline via tagColor()
 }
 
-.tagMore {
+.recurrenceIcon {
   font-size: 11px;
-  padding: 2px 8px;
   color: var(--text-faint);
-  border: 1px dashed var(--glass-border-s);
-  border-radius: 100px;
-  line-height: 1.6;
+  margin-left: 5px;
+  vertical-align: middle;
+  opacity: 0.7;
+}
+
+.loading {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

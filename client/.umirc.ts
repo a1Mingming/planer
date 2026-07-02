@@ -8,6 +8,7 @@ export default defineConfig({
     { path: '/plans/month/:month', component: '@/pages/plans/month' },
     { path: '/plans/month', component: '@/pages/plans/month' },
     { path: '/plans/day/:date', component: '@/pages/plans/day' },
+    { path: '/plans/search', component: '@/pages/plans/search' },
   ],
   npmClient: 'pnpm',
   esbuildMinifyIIFE: true,

@@ -76,13 +76,19 @@ server/src/
 
 数据库文件路径：`server/data/plans.db`，首次启动时由 `migrate.ts` 自动创建。seed 使用 `INSERT OR IGNORE`，重复启动安全。
 
+## 业务文档
+
+`docs/` 目录维护面向开发者的业务文档，完整内容以此为准：
+
+- [`docs/api.md`](docs/api.md) — 所有 API 接口、请求/响应格式、错误码
+- [`docs/data-model.md`](docs/data-model.md) — Plan / Tag 数据结构、可编辑性判断逻辑
+- [`docs/recurrence.md`](docs/recurrence.md) — 循环计划创建、编辑、删除的完整逻辑
+
+**每次修改涉及 API 接口、数据模型或核心业务逻辑时，必须同步更新对应文档文件。**
+
 ## API 约定
 
-所有响应格式：`{ success: true, data: T }` 或 `{ success: false, error: { code, message } }`。
-
-`GET /api/plans` 必须传 `view=year|month|day` 和 `date=YYYY|YYYY-MM|YYYY-MM-DD`。**年视图返回每月统计摘要 `{ month, total, done }[]`，而非计划记录列表。**
-
-错误码：`PLAN_NOT_FOUND`、`TAG_NOT_FOUND`、`TAG_ALREADY_EXISTS`、`TAG_PRESET_READONLY`、`INVALID_PARAM`、`INTERNAL_ERROR`。
+所有响应格式：`{ success: true, data: T }` 或 `{ success: false, error: { code, message } }`。完整接口和错误码见 [`docs/api.md`](docs/api.md)。
 
 ## 数据库关键注意点
 
@@ -102,39 +108,23 @@ server/src/
 
 ## Ant Design 主题配置
 
-**Ant Design 5 统一主题 token 通过 `ConfigProvider` 在 `layouts/index.tsx` 中注入**，所有子组件自动继承，不在各组件 `.less` 中单独覆盖颜色等基础 token。
-
-```tsx
-// layouts/index.tsx
-import { ConfigProvider } from 'antd';
-
-const antdTheme = {
-  token: {
-    colorPrimary: '#C84B31',
-    colorBgContainer: '#FDFAF7',
-    colorBorder: '#C4BFBA',
-    colorText: '#1C1917',
-    borderRadius: 4,
-    fontFamily: "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
-  },
-};
-
-// <ConfigProvider theme={antdTheme}> 包裹整个布局
-```
+**Ant Design 统一主题 token 通过 `ConfigProvider` 在 `layouts/index.tsx` 中注入**，所有子组件自动继承，不在各组件 `.less` 中单独覆盖颜色等基础 token。
 
 注意：本项目使用纯 `umi`，**不能**在 `.umirc.ts` 中使用 `antd` 配置 key（需要 `@umijs/plugin-antd` 才支持）。
 
-仅需在组件 `.less` 中覆盖结构性样式（如 Modal padding、header 背景色等）时，才使用 `:global(.ant-modal-content)` 等方式局部覆写。
+**Ant Design 6 注意**：AntD6 内部类名有变化，如 `.ant-modal-content` → `.ant-modal-container`，覆盖样式时需检查实际 DOM 类名。
+
+仅需在组件 `.less` 中覆盖结构性样式（如 Modal padding、header 背景色等）时，才使用 `:global(.ant-modal-container)` 等方式局部覆写。
 
 ## 前端架构（已实现）
 
 ```
 client/src/
-├── types/          # Plan、Tag、ViewMode、API 响应类型
-├── services/       # getPlans、createPlan、updatePlan、deletePlan、getTags、createTag、deleteTag
+├── types/          # Plan、Tag、ViewMode、API 响应类型；isPlanEditable 可编辑性判断
+├── services/       # API 调用封装（plan、tag）
 ├── styles/         # variables.less — 设计系统变量（颜色、字体、断点）
 ├── layouts/        # 主布局（顶部导航，原生 button 替代 Ant Button）
-├── components/     # PlanForm（Modal）、PlanCard（原生 checkbox + 自定义标签）、FabButton（原生 button）
+├── components/     # PlanForm（Modal）、PlanCard、FabButton
 └── pages/plans/    # year.tsx、month.tsx、day.tsx
 ```
 
@@ -144,27 +134,12 @@ client/src/
 
 年视图使用内联 SVG 环形进度（`RingProgress` 组件）替代 Ant Design Progress，避免引入额外 JS bundle。FabButton、导航箭头均使用原生 `<button>` + CSS Modules，减少对 Ant Design 的依赖。Ant Design 保留用于：Form、Modal、DatePicker、TimePicker、Select、Calendar、Skeleton、Result、Empty、Popconfirm、message。
 
-## 已知问题与解决方案
+## Git 安全规则
 
-### 浏览器控制台警告排查
-
-遇到控制台警告时，使用 Playwright 监听 `console` 事件批量捕获，无需手动逐页检查：
-
-```ts
-page.on('console', (msg) => {
-  console.log(`[${msg.type()}] ${msg.text()}`);
-});
-```
-
-在临时 E2E 测试文件中访问各页面、触发交互后打印收集到的消息，定位警告来源后再修复。
-
-### Ant Design 废弃 API
-
-升级 Ant Design 大版本后可能出现 `[antd: XxxComponent] xxx is deprecated` 警告，查阅对应版本迁移文档替换废弃 prop。可通过上述 Playwright 控制台捕获方法快速定位。
-
-### Umi 配置项无效
-
-`.umirc.ts` 中只能使用已安装插件支持的 config key。本项目未安装 `@umijs/plugin-antd`，**不能**使用 `antd` key。Ant Design 主题通过 `ConfigProvider` 注入（见"Ant Design 主题配置"章节）。
+- **禁止自动执行** `filter-branch`、`rebase -i`、`reset --hard`，操作前必须**显式请求用户确认**
+- 执行前 `git stash list` 确认无遗留 stash，`git status` 确认工作区干净
+- 执行前 `git branch backup` 创建备份分支，失败可回退
+- 频繁 commit（每个功能点一次），WIP 比 stash 更安全
 
 ## Hookify 规则
 

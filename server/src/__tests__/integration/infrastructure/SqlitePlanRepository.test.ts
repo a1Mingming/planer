@@ -14,13 +14,18 @@ let db: Database.Database;
 function runMigrate(database: Database.Database) {
   database.exec(`
     CREATE TABLE IF NOT EXISTS plans (
-      id         INTEGER PRIMARY KEY AUTOINCREMENT,
-      title      TEXT    NOT NULL,
-      date       TEXT    NOT NULL,
-      start_time TEXT,
-      end_time   TEXT,
-      tags       TEXT,
-      done       INTEGER NOT NULL DEFAULT 0,
+      id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+      title                TEXT    NOT NULL,
+      date                 TEXT    NOT NULL,
+      start_time           TEXT,
+      end_time             TEXT,
+      tags                 TEXT,
+      done                 INTEGER NOT NULL DEFAULT 0,
+      priority             INTEGER NOT NULL DEFAULT 1,
+      recurrence_type      TEXT    NOT NULL DEFAULT 'none',
+      recurrence_days      TEXT,
+      recurrence_end_date  TEXT,
+      recurrence_group_id  TEXT,
       created_at TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
       updated_at TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
     );
@@ -28,6 +33,16 @@ function runMigrate(database: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_plans_date_done ON plans(date, done);
   `);
 }
+
+const BASE_DTO = {
+  start_time: null as string | null,
+  end_time: null as string | null,
+  priority: 1 as 1 | 2 | 3,
+  recurrence_type: 'none' as const,
+  recurrence_days: null as number[] | null,
+  recurrence_end_date: null as string | null,
+  recurrence_group_id: null as string | null,
+};
 
 describe('SqlitePlanRepository (integration)', () => {
   let repo: SqlitePlanRepository;
@@ -48,6 +63,7 @@ describe('SqlitePlanRepository (integration)', () => {
   describe('create and findById', () => {
     it('creates a plan and retrieves it by id', () => {
       const plan = repo.create({
+        ...BASE_DTO,
         title: '测试计划',
         date: '2026-06-29',
         tags: ['工作'],
@@ -71,9 +87,9 @@ describe('SqlitePlanRepository (integration)', () => {
 
   describe('findByView', () => {
     beforeEach(() => {
-      repo.create({ title: '六月计划', date: '2026-06-15', tags: [], done: false });
-      repo.create({ title: '七月计划', date: '2026-07-01', tags: [], done: true });
-      repo.create({ title: '日计划', date: '2026-06-29', tags: [], done: false });
+      repo.create({ ...BASE_DTO, title: '六月计划', date: '2026-06-15', tags: [], done: false });
+      repo.create({ ...BASE_DTO, title: '七月计划', date: '2026-07-01', tags: [], done: true });
+      repo.create({ ...BASE_DTO, title: '日计划', date: '2026-06-29', tags: [], done: false });
     });
 
     it('finds plans by specific day', () => {
@@ -103,7 +119,7 @@ describe('SqlitePlanRepository (integration)', () => {
 
   describe('update', () => {
     it('updates existing plan fields', () => {
-      const plan = repo.create({ title: '原标题', date: '2026-06-29', tags: [], done: false });
+      const plan = repo.create({ ...BASE_DTO, title: '原标题', date: '2026-06-29', tags: [], done: false });
       const updated = repo.update(plan.id, { title: '新标题', done: true });
       expect(updated).not.toBeNull();
       expect(updated!.title).toBe('新标题');
@@ -115,13 +131,13 @@ describe('SqlitePlanRepository (integration)', () => {
     });
 
     it('persists tag changes', () => {
-      const plan = repo.create({ title: '计划', date: '2026-06-29', tags: ['工作'], done: false });
+      const plan = repo.create({ ...BASE_DTO, title: '计划', date: '2026-06-29', tags: ['工作'], done: false });
       const updated = repo.update(plan.id, { tags: ['工作', '学习'] });
       expect(updated!.tags).toEqual(['工作', '学习']);
     });
 
     it('clears tags when updated to empty array', () => {
-      const plan = repo.create({ title: '计划', date: '2026-06-29', tags: ['工作'], done: false });
+      const plan = repo.create({ ...BASE_DTO, title: '计划', date: '2026-06-29', tags: ['工作'], done: false });
       const updated = repo.update(plan.id, { tags: [] });
       expect(updated!.tags).toEqual([]);
     });
@@ -129,7 +145,7 @@ describe('SqlitePlanRepository (integration)', () => {
 
   describe('delete', () => {
     it('deletes existing plan and returns true', () => {
-      const plan = repo.create({ title: '待删计划', date: '2026-06-29', tags: [], done: false });
+      const plan = repo.create({ ...BASE_DTO, title: '待删计划', date: '2026-06-29', tags: [], done: false });
       expect(repo.delete(plan.id)).toBe(true);
       expect(repo.findById(plan.id)).toBeNull();
     });
@@ -141,9 +157,9 @@ describe('SqlitePlanRepository (integration)', () => {
 
   describe('getYearSummary', () => {
     it('returns aggregated monthly statistics', () => {
-      repo.create({ title: 'A', date: '2026-06-01', tags: [], done: false });
-      repo.create({ title: 'B', date: '2026-06-02', tags: [], done: true });
-      repo.create({ title: 'C', date: '2026-07-01', tags: [], done: false });
+      repo.create({ ...BASE_DTO, title: 'A', date: '2026-06-01', tags: [], done: false });
+      repo.create({ ...BASE_DTO, title: 'B', date: '2026-06-02', tags: [], done: true });
+      repo.create({ ...BASE_DTO, title: 'C', date: '2026-07-01', tags: [], done: false });
 
       const summary = repo.getYearSummary('2026');
       expect(summary).toHaveLength(2);
@@ -166,6 +182,7 @@ describe('SqlitePlanRepository (integration)', () => {
   describe('tags serialization', () => {
     it('stores and retrieves multiple tags correctly', () => {
       const plan = repo.create({
+        ...BASE_DTO,
         title: '多标签计划',
         date: '2026-06-29',
         tags: ['工作', '学习', '健身'],
@@ -176,7 +193,7 @@ describe('SqlitePlanRepository (integration)', () => {
     });
 
     it('stores and retrieves empty tags as empty array', () => {
-      const plan = repo.create({ title: '无标签', date: '2026-06-29', tags: [], done: false });
+      const plan = repo.create({ ...BASE_DTO, title: '无标签', date: '2026-06-29', tags: [], done: false });
       expect(repo.findById(plan.id)!.tags).toEqual([]);
     });
   });

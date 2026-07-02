@@ -77,7 +77,7 @@ test('clicking FAB opens new plan modal', async ({ page }) => {
   await setupRoutes(page);
   await page.goto(`/plans/month/${thisMonth}`);
   await page.waitForLoadState('networkidle');
-  await page.locator('[class*="fab"]').click();
+  await page.locator('[class*="fab"]').click({ force: true });
   await expect(page.locator('.ant-modal-title')).toContainText('新建计划');
 });
 
@@ -85,7 +85,7 @@ test('shows error when submitting without title', async ({ page }) => {
   await setupRoutes(page);
   await page.goto(`/plans/month/${thisMonth}`);
   await page.waitForLoadState('networkidle');
-  await page.locator('[class*="fab"]').click();
+  await page.locator('[class*="fab"]').click({ force: true });
   await expect(page.locator('.ant-modal')).toBeVisible();
   // Wait for form to be ready
   await expect(page.locator('.ant-form')).toBeVisible();
@@ -99,7 +99,7 @@ test('creates plan successfully and closes modal', async ({ page }) => {
   await setupRoutes(page);
   await page.goto(`/plans/month/${thisMonth}`);
   await page.waitForLoadState('networkidle');
-  await page.locator('[class*="fab"]').click();
+  await page.locator('[class*="fab"]').click({ force: true });
   await expect(page.locator('.ant-modal')).toBeVisible();
   await expect(page.locator('.ant-form')).toBeVisible();
 

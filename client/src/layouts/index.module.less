@@ -158,3 +158,21 @@
     padding: 16px 12px;
   }
 }
+
+.searchInput {
+  width: 180px;
+  transition: width 0.2s;
+  flex-shrink: 0;
+
+  &:focus-within {
+    width: 240px;
+  }
+
+  @media (max-width: 768px) {
+    width: 120px;
+
+    &:focus-within {
+      width: 160px;
+    }
+  }
+}

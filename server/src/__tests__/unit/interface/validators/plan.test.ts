@@ -9,6 +9,8 @@ describe('CreatePlanSchema', () => {
   const validPayload = {
     title: '测试计划',
     date: '2026-06-29',
+    start_time: '09:00',
+    end_time: '10:00',
   };
 
   it('accepts valid minimal payload', () => {

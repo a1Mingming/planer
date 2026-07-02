@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'umi';
-import { Calendar, Skeleton, Result, Empty, Button } from 'antd';
+import { Calendar, Skeleton, Result, Empty, Button, Modal, Radio, Space } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
-import { getMonthPlans, updatePlan, deletePlan } from '@/services/plan';
-import type { Plan } from '@/types/plan';
+import { getMonthPlans, updatePlan, deletePlan, deletePlanRecurrence } from '@/services/plan';
+import type { Plan, RecurrenceScope } from '@/types/plan';
+import { isPlanEditable } from '@/types/plan';
 import PlanCard from '@/components/PlanCard';
 import FabButton from '@/components/FabButton';
 import PlanForm from '@/components/PlanForm';
@@ -23,6 +24,10 @@ export default function MonthPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editPlan, setEditPlan] = useState<Plan | null>(null);
   const [formDate, setFormDate] = useState<string | undefined>();
+  const [togglingId, setTogglingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deleteScopeTarget, setDeleteScopeTarget] = useState<Plan | null>(null);
+  const [deleteScope, setDeleteScope] = useState<RecurrenceScope>('one');
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -41,7 +46,10 @@ export default function MonthPage() {
 
   useEffect(() => {
     load();
-    setSelectedDate(currentMonth + '-01');
+    // 切换月份时：今天在新月份内则选今天，否则选 1 号
+    const today = dayjs().format('YYYY-MM-DD');
+    const defaultDate = today.startsWith(currentMonth) ? today : currentMonth + '-01';
+    setSelectedDate(defaultDate);
   }, [load, currentMonth]);
 
   const prevMonth = dayjs(currentMonth).subtract(1, 'month').format('YYYY-MM');
@@ -64,13 +72,35 @@ export default function MonthPage() {
   };
 
   const handleToggle = async (id: number, done: boolean) => {
-    await updatePlan(id, { done });
+    setTogglingId(id);
+    await updatePlan(id, { done }).finally(() => setTogglingId(null));
     setPlans((prev) => prev.map((p) => p.id === id ? { ...p, done } : p));
   };
 
   const handleDelete = async (id: number) => {
-    await deletePlan(id);
+    const target = plans.find((p) => p.id === id);
+    if (target?.recurrence_group_id) {
+      setDeleteScope('one');
+      setDeleteScopeTarget(target);
+      return;
+    }
+    setDeletingId(id);
+    await deletePlan(id).finally(() => setDeletingId(null));
     setPlans((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const handleDeleteScopeConfirm = async () => {
+    if (!deleteScopeTarget) return;
+    const { id } = deleteScopeTarget;
+    setDeleteScopeTarget(null);
+    setDeletingId(id);
+    if (deleteScope === 'one') {
+      await deletePlan(id).finally(() => setDeletingId(null));
+      setPlans((prev) => prev.filter((p) => p.id !== id));
+    } else {
+      await deletePlanRecurrence(id, deleteScope).finally(() => setDeletingId(null));
+      await load();
+    }
   };
 
   const openCreate = (date?: string) => {
@@ -80,6 +110,7 @@ export default function MonthPage() {
   };
 
   const openEdit = (plan: Plan) => {
+    if (!isPlanEditable(plan)) return;
     setEditPlan(plan);
     setFormDate(undefined);
     setFormOpen(true);
@@ -123,6 +154,8 @@ export default function MonthPage() {
                   onToggleDone={handleToggle}
                   onEdit={openEdit}
                   onDelete={handleDelete}
+                  isToggling={togglingId === p.id}
+                  isDeleting={deletingId === p.id}
                 />
               ))}
             </div>
@@ -165,6 +198,8 @@ export default function MonthPage() {
                   onToggleDone={handleToggle}
                   onEdit={openEdit}
                   onDelete={handleDelete}
+                  isToggling={togglingId === p.id}
+                  isDeleting={deletingId === p.id}
                 />
               ))
             )}
@@ -180,6 +215,29 @@ export default function MonthPage() {
         onClose={() => setFormOpen(false)}
         onSaved={load}
       />
+      <Modal
+        title="删除范围"
+        open={!!deleteScopeTarget}
+        onCancel={() => setDeleteScopeTarget(null)}
+        onOk={handleDeleteScopeConfirm}
+        okText="确认删除"
+        okButtonProps={{ danger: true }}
+        cancelText="取消"
+        width={320}
+      >
+        <Radio.Group value={deleteScope} onChange={(e) => setDeleteScope(e.target.value as RecurrenceScope)}>
+          <Space direction="vertical">
+            <Radio value="one">仅删除此条</Radio>
+            <Radio value="future" disabled={!!deleteScopeTarget && !isPlanEditable(deleteScopeTarget)}>删除此条及之后</Radio>
+            <Radio value="all" disabled={!!deleteScopeTarget && !isPlanEditable(deleteScopeTarget)}>删除全部</Radio>
+          </Space>
+        </Radio.Group>
+        {deleteScopeTarget && !isPlanEditable(deleteScopeTarget) && (
+          <p style={{ marginTop: 8, fontSize: 12, color: 'var(--text-muted)' }}>
+            该计划时间已到来，仅可删除此条
+          </p>
+        )}
+      </Modal>
     </div>
   );
 }

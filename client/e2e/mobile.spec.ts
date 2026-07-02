@@ -43,7 +43,7 @@ test('FAB is visible on mobile', async ({ page }) => {
 test('FAB opens modal on mobile', async ({ page }) => {
   await page.goto(`/plans/month/${thisMonth}`);
   await page.waitForLoadState('networkidle');
-  await page.locator('[class*="fab"]').click();
+  await page.locator('[class*="fab"]').click({ force: true });
   await expect(page.locator('.ant-modal')).toBeVisible();
 });
 

@@ -1,8 +1,16 @@
 import { useState, useCallback, createContext, useContext } from 'react';
 import { Outlet, useNavigate, useLocation } from 'umi';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, Input } from 'antd';
+import zhCN from 'antd/locale/zh_CN';
 import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+import weekday from 'dayjs/plugin/weekday';
+import localeData from 'dayjs/plugin/localeData';
 import styles from './index.module.less';
+
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.locale('zh-cn');
 
 // ─── Theme Context ────────────────────────────────────────────────
 type Theme = 'light' | 'dark';
@@ -78,7 +86,6 @@ export default function Layout() {
         Math.max(x, window.innerWidth - x),
         Math.max(y, window.innerHeight - y),
       );
-      // @ts-expect-error — View Transitions API not yet in TS lib
       const vt = document.startViewTransition(() => {
         applyTheme(next);
         setTheme(next);
@@ -108,7 +115,7 @@ export default function Layout() {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <ConfigProvider theme={buildAntdTheme(isDark)}>
+      <ConfigProvider theme={buildAntdTheme(isDark)} locale={zhCN}>
         <div className={`${styles.layout} ${isDark ? styles.dark : ''}`}>
           <header className={styles.header}>
             <div className={styles.logo}>
@@ -136,6 +143,13 @@ export default function Layout() {
                 日程
               </button>
             </nav>
+
+            <Input.Search
+              placeholder="搜索计划..."
+              allowClear
+              className={styles.searchInput}
+              onSearch={(q) => { if (q.trim()) navigate(`/plans/search?q=${encodeURIComponent(q.trim())}`); }}
+            />
 
             <button
               className={styles.themeBtn}

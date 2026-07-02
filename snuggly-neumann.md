@@ -3,7 +3,7 @@
 ## Context
 
 个人日程管理工具，支持按年/月/日三级视图浏览和管理计划，移动端优先。
-技术栈：Umi 4 + React 18 + TypeScript + Ant Design 5（前端）+ Express + better-sqlite3（后端）。
+技术栈：Umi 4 + React 18 + TypeScript + Ant Design 6（前端）+ Express + better-sqlite3（后端）。
 目录 `C:\Users\GhostCloud\Desktop\test` 当前为空，从零搭建。
 
 ---
@@ -170,7 +170,7 @@ export type UpdatePlanPayload = Partial<CreatePlanPayload>;
 - `src/components/PlanForm/index.tsx` — 新建/编辑 Modal 表单
 - `src/components/PlanCard/index.tsx` — 单条计划卡片（含完成勾选）
 - `src/components/FabButton/index.tsx` — 右下角悬浮新建按钮
-- `src/layouts/index.tsx` — 主布局（顶部导航 + 内容区）
+- `src/layouts/index.tsx` — 主布局（顶部导航 + 内容区）；配置 Ant Design `ConfigProvider`（主题 + `zhCN` locale）及 dayjs 中文化（`weekday`、`localeData` 插件 + `dayjs.locale('zh-cn')`）
 
 ---
 

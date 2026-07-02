@@ -12,6 +12,11 @@ const mockPlan: Plan = {
   end_time: '10:00',
   tags: ['工作'],
   done: false,
+  priority: 1,
+  recurrence_type: 'none',
+  recurrence_days: null,
+  recurrence_end_date: null,
+  recurrence_group_id: null,
   created_at: '2026-06-29 00:00:00',
   updated_at: '2026-06-29 00:00:00',
 };
@@ -20,9 +25,14 @@ function makeMockRepo(overrides: Partial<IPlanRepository> = {}): IPlanRepository
   return {
     findByView: vi.fn().mockReturnValue([]),
     findById: vi.fn().mockReturnValue(null),
+    search: vi.fn().mockReturnValue([]),
     create: vi.fn().mockReturnValue(mockPlan),
+    createBatch: vi.fn().mockReturnValue([mockPlan]),
     update: vi.fn().mockReturnValue(mockPlan),
+    updateByGroup: vi.fn(),
     delete: vi.fn().mockReturnValue(true),
+    deleteByGroup: vi.fn(),
+    countByGroup: vi.fn().mockReturnValue(0),
     getYearSummary: vi.fn().mockReturnValue([]),
     ...overrides,
   };
@@ -79,8 +89,15 @@ describe('PlanService', () => {
       const dto: CreatePlanDto = {
         title: '新计划',
         date: '2026-06-29',
+        start_time: '09:00',
+        end_time: '10:00',
         tags: [],
         done: false,
+        priority: 1,
+        recurrence_type: 'none',
+        recurrence_days: null,
+        recurrence_end_date: null,
+        recurrence_group_id: null,
       };
       const result = service.createPlan(dto);
       expect(repo.create).toHaveBeenCalledWith(dto);
